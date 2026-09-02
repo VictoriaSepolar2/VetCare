@@ -31,3 +31,17 @@ export async function buscarPorId(
 
   res.status(200).json(pet);
 }
+
+export async function atualizar(
+  req: Request,
+  res: Response
+): Promise<void> {
+  const id = Number(req.params.id);
+
+  const petAtualizado = await petService.atualizarPet(
+    id,
+    req.body
+  );
+
+  res.status(200).json(petAtualizado);
+}
