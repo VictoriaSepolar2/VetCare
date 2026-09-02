@@ -1,40 +1,50 @@
-import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
-import { prisma } from '../config/prisma';
-import { AppError } from '../middlewares/error.middleware';
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
+
+import { prisma } from "../config/prisma";
+import { AppError } from "../middlewares/error.middleware";
 
 interface LoginInput {
-  email: string;
+  usuario: string;
   senha: string;
 }
 
 export async function login(dados: LoginInput) {
-  // 1) Buscamos o cliente pelo e-mail informado. Se "cliente" for "null",
-  // significa que não existe nenhum Cliente cadastrado com esse e-mail.
-  const cliente = await prisma.cliente.findUnique({
-    where: { email: dados.email },
+  const usuario = await prisma.usuario.findUnique({
+    where: { usuario: dados.usuario },
   });
+
+  if (!usuario) {
+    throw new AppError("Usuário ou senha inválidos.", 401);
+  }
 
   const senhaConfere = await bcrypt.compare(
     dados.senha,
-    cliente?.senha ?? ''
+    usuario.senha
   );
 
-  if (!cliente || !senhaConfere) {
-    throw new AppError('E-mail ou senha inválidos.', 401);
+  if (!senhaConfere) {
+    throw new AppError("Usuário ou senha inválidos.", 401);
   }
-const token = jwt.sign(
-    { id: cliente.id, email: cliente.email },
+
+  const token = jwt.sign(
+    {
+      id: usuario.id,
+      usuario: usuario.usuario,
+      tipo: usuario.tipo,
+    },
     process.env.JWT_SECRET as string,
-    { expiresIn: (process.env.JWT_EXPIRES_IN || '1d') as jwt.SignOptions['expiresIn'] }
+    {
+      expiresIn: (process.env.JWT_EXPIRES_IN || "1d") as jwt.SignOptions["expiresIn"],
+    }
   );
-return {
+
+  return {
     token,
-    cliente: {
-      id: cliente.id,
-      nome: cliente.nome,
-      email: cliente.email,
+    usuario: {
+      id: usuario.id,
+      usuario: usuario.usuario,
+      tipo: usuario.tipo,
     },
   };
 }
-

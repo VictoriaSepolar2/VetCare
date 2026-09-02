@@ -1,5 +1,5 @@
-import { prisma } from '../config/prisma';
-import { AppError } from '../middlewares/error.middleware';
+import { prisma } from "../config/prisma";
+import { AppError } from "../middlewares/error.middleware";
 
 const SELECT_CLIENTE_PUBLICO = {
   id: true,
@@ -28,7 +28,7 @@ export async function criarCliente(dados: CriarClienteInput) {
   });
 
   if (clienteExistente) {
-    throw new AppError('CPF ou e-mail já cadastrado.', 409);
+    throw new AppError("CPF ou e-mail já cadastrado.", 409);
   }
 
   const clienteCriado = await prisma.cliente.create({
@@ -37,4 +37,26 @@ export async function criarCliente(dados: CriarClienteInput) {
   });
 
   return clienteCriado;
+}
+
+export async function listarClientes() {
+  return prisma.cliente.findMany({
+    select: SELECT_CLIENTE_PUBLICO,
+    orderBy: {
+      id: "asc",
+    },
+  });
+}
+
+export async function buscarClientePorId(id: number) {
+  const cliente = await prisma.cliente.findUnique({
+    where: { id },
+    select: SELECT_CLIENTE_PUBLICO,
+  });
+
+  if (!cliente) {
+    throw new AppError("Cliente não encontrado.", 404);
+  }
+
+  return cliente;
 }

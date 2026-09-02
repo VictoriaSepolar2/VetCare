@@ -1,12 +1,11 @@
-import { prisma } from '../config/prisma';
-import { AppError } from '../middlewares/error.middleware';
+import { prisma } from "../config/prisma";
+import { AppError } from "../middlewares/error.middleware";
 
 interface CriarVeterinarioInput {
   nome: string;
   crmv: string;
-  especialidade?: string;
-  email?: string;
-  telefone?: string;
+  especialidade: string;
+  email: string;
 }
 
 interface AtualizarVeterinarioInput {
@@ -14,7 +13,6 @@ interface AtualizarVeterinarioInput {
   crmv?: string;
   especialidade?: string;
   email?: string;
-  telefone?: string;
 }
 
 export async function criarVeterinario(dados: CriarVeterinarioInput) {
@@ -23,7 +21,10 @@ export async function criarVeterinario(dados: CriarVeterinarioInput) {
   });
 
   if (veterinarioExistente) {
-    throw new AppError('Veterinário com este CRMV já está cadastrado.', 400);
+    throw new AppError(
+      "Veterinário com este CRMV já está cadastrado.",
+      400,
+    );
   }
 
   const veterinario = await prisma.veterinario.create({
@@ -36,21 +37,23 @@ export async function criarVeterinario(dados: CriarVeterinarioInput) {
 export async function listarVeterinarios() {
   return prisma.veterinario.findMany({
     orderBy: {
-      id: 'asc',
+      id: "asc",
     },
   });
 }
+
 export async function buscarVeterinarioPorId(id: number) {
   const veterinario = await prisma.veterinario.findUnique({
     where: { id },
   });
 
   if (!veterinario) {
-    throw new AppError('Veterinário não encontrado.', 404);
+    throw new AppError("Veterinário não encontrado.", 404);
   }
 
   return veterinario;
 }
+
 export async function atualizarVeterinario(
   id: number,
   dados: AtualizarVeterinarioInput,
@@ -64,6 +67,7 @@ export async function atualizarVeterinario(
 
   return veterinarioAtualizado;
 }
+
 export async function excluirVeterinario(id: number) {
   await buscarVeterinarioPorId(id);
 
@@ -72,6 +76,6 @@ export async function excluirVeterinario(id: number) {
   });
 
   return {
-    mensagem: 'Veterinário excluído com sucesso.',
+    mensagem: "Veterinário excluído com sucesso.",
   };
 }

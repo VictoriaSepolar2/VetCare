@@ -1,5 +1,5 @@
-import { prisma } from '../config/prisma';
-import { AppError } from '../middleware/error.middleware';
+import { prisma } from "../config/prisma";
+import { AppError } from "../middlewares/error.middleware";
 
 interface CriarConsultaInput {
   petId: number;
@@ -14,7 +14,7 @@ export async function criarConsulta(dados: CriarConsultaInput) {
   });
 
   if (!pet) {
-    throw new AppError('Pet não encontrado.', 404);
+    throw new AppError("Pet não encontrado.", 404);
   }
 
   const veterinario = await prisma.veterinario.findUnique({
@@ -22,16 +22,17 @@ export async function criarConsulta(dados: CriarConsultaInput) {
   });
 
   if (!veterinario) {
-    throw new AppError('Veterinário não encontrado.', 404);
+    throw new AppError("Veterinário não encontrado.", 404);
   }
+
+  const dataHora = new Date(`${dados.data}T${dados.horario}`);
 
   const consulta = await prisma.consulta.create({
     data: {
       petId: dados.petId,
       veterinarioId: dados.veterinarioId,
-      data: new Date(dados.data),
-      horario: dados.horario,
-      status: 'Agendada',
+      dataConsulta: dataHora,
+      statusConsulta: "Agendada",
     },
     include: {
       pet: true,
@@ -49,7 +50,7 @@ export async function listarConsultas() {
       veterinario: true,
     },
     orderBy: {
-      id: 'desc',
+      id: "desc",
     },
   });
 }
@@ -64,7 +65,7 @@ export async function buscarConsultaPorId(id: number) {
   });
 
   if (!consulta) {
-    throw new AppError('Consulta não encontrada.', 404);
+    throw new AppError("Consulta não encontrada.", 404);
   }
 
   return consulta;
@@ -76,12 +77,12 @@ export async function concluirConsulta(id: number) {
   });
 
   if (!consulta) {
-    throw new AppError('Consulta não encontrada.', 404);
+    throw new AppError("Consulta não encontrada.", 404);
   }
 
-  if (consulta.status !== 'Agendada') {
+  if (consulta.statusConsulta !== "Agendada") {
     throw new AppError(
-      'Somente consultas agendadas podem ser concluídas.',
+      "Somente consultas agendadas podem ser concluídas.",
       400,
     );
   }
@@ -89,7 +90,7 @@ export async function concluirConsulta(id: number) {
   return prisma.consulta.update({
     where: { id },
     data: {
-      status: 'Concluida',
+      statusConsulta: "Concluida",
     },
     include: {
       pet: true,
@@ -104,12 +105,12 @@ export async function cancelarConsulta(id: number) {
   });
 
   if (!consulta) {
-    throw new AppError('Consulta não encontrada.', 404);
+    throw new AppError("Consulta não encontrada.", 404);
   }
 
-  if (consulta.status !== 'Agendada') {
+  if (consulta.statusConsulta !== "Agendada") {
     throw new AppError(
-      'Somente consultas agendadas podem ser canceladas.',
+      "Somente consultas agendadas podem ser canceladas.",
       400,
     );
   }
@@ -117,7 +118,7 @@ export async function cancelarConsulta(id: number) {
   return prisma.consulta.update({
     where: { id },
     data: {
-      status: 'Cancelada',
+      statusConsulta: "Cancelada",
     },
     include: {
       pet: true,
