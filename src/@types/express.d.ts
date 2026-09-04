@@ -1,12 +1,13 @@
 import 'express';
 
 declare global {
-namespace Express {
-interface Request {
- user?: {
+  namespace Express {
+    interface Request {
+      user?: {
         id: number;
-        email: string;
+        usuario: string;
+        tipo: string;
       };
     }
   }
-}    
+}
