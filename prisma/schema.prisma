@@ -75,10 +75,24 @@ model Prontuario {
 }
 
 model Usuario {
-  id      Int    @id @default(autoincrement())
-  usuario String @unique
-  senha   String
-  tipo    String
+  id          Int                @id @default(autoincrement())
+  usuario     String             @unique
+  senha       String
+  tipo        String
+  criadoEm    DateTime           @default(now())
+
+  permissoes  PermissaoUsuario[]
 
   @@map("usuarios")
+}
+
+model PermissaoUsuario {
+  id          Int      @id @default(autoincrement())
+  usuarioId   Int
+  permissao   String
+
+  usuario     Usuario  @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+
+  @@unique([usuarioId, permissao])
+  @@map("permissoes_usuarios")
 }

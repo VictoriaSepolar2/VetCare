@@ -1,10 +1,13 @@
 import { Router } from 'express';
 
-import * as petController from '../controllers/pet.controller';
+import * as petController
+  from '../controllers/pet.controller';
 
-import { authMiddleware } from '../middlewares/auth.middleware';
+import { authMiddleware }
+  from '../middlewares/auth.middleware';
 
-import { somenteAdminOuFuncionario } from '../middlewares/role.middleware';
+import { somenteComPermissao }
+  from '../middlewares/permission.middleware';
 
 const router = Router();
 
@@ -12,25 +15,25 @@ router.use(authMiddleware);
 
 router.post(
   '/',
-  somenteAdminOuFuncionario,
+  somenteComPermissao('PETS'),
   petController.criar
 );
 
 router.get(
   '/',
-  somenteAdminOuFuncionario,
+  somenteComPermissao('PETS'),
   petController.listar
 );
 
 router.get(
   '/:id',
-  somenteAdminOuFuncionario,
+  somenteComPermissao('PETS'),
   petController.buscarPorId
 );
 
 router.put(
   '/:id',
-  somenteAdminOuFuncionario,
+  somenteComPermissao('PETS'),
   petController.atualizar
 );
 

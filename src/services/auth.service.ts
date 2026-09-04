@@ -48,3 +48,36 @@ export async function login(dados: LoginInput) {
     },
   };
 }
+
+export async function criarPrimeiroAdmin(dados: {
+  usuario: string;
+  senha: string;
+}) {
+  const quantidadeUsuarios = await prisma.usuario.count();
+
+  if (quantidadeUsuarios > 0) {
+    throw new AppError(
+      'O primeiro Administrador Principal já foi cadastrado.',
+      403
+    );
+  }
+
+  const senhaHash = await bcrypt.hash(
+    dados.senha,
+    10
+  );
+
+  const usuario = await prisma.usuario.create({
+    data: {
+      usuario: dados.usuario,
+      senha: senhaHash,
+      tipo: 'ADMIN_PRINCIPAL',
+    },
+  });
+
+  return {
+    id: usuario.id,
+    usuario: usuario.usuario,
+    tipo: usuario.tipo,
+  };
+}

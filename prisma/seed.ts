@@ -21,7 +21,7 @@ async function main() {
       nome: 'Max',
       especie: 'Cão',
       raca: 'Chow Chow',
-      dataNascimento: new Date('10-05-2022'),
+      dataNascimento: new Date('2022-05-10'),
     },
   });
 
@@ -38,7 +38,7 @@ async function main() {
     data: {
       petId: pet.id,
       veterinarioId: veterinario.id,
-      dataConsulta: new Date('10-09-2026T14:00:00'),
+      dataConsulta: new Date('2026-09-10T14:00:00'),
       statusConsulta: 'Agendada',
     },
   });
@@ -48,7 +48,7 @@ async function main() {
       consultaId: consulta.id,
       diagnostico: 'Animal saudável.',
       medicamentosPrescritos: 'Nenhum medicamento prescrito.',
-      dataRetorno: new Date('10-10-2026'),
+      dataRetorno: new Date('2026-10-10'),
     },
   });
 
@@ -56,7 +56,7 @@ async function main() {
     data: {
       usuario: 'admin',
       senha: senhaHash,
-      tipo: 'Administrador',
+      tipo: 'ADMIN',
     },
   });
 
@@ -67,7 +67,7 @@ async function main() {
   console.log('- 1 veterinário criado');
   console.log('- 1 consulta criada');
   console.log('- 1 prontuário criado');
-  console.log('- 1 usuário criado');
+  console.log('- 1 usuário ADMIN criado');
   console.log('----------------------------------------------------');
 }
 

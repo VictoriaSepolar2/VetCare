@@ -1,0 +1,7 @@
+POST http://localhost:3333/auth/primeiro-admin
+Content-Type: application/json
+
+{
+  "usuario": "admin",
+  "senha": "123456"
+}

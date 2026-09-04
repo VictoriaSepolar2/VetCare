@@ -7,6 +7,7 @@ declare global {
         id: number;
         usuario: string;
         tipo: string;
+        permissoes: string[];
       };
     }
   }

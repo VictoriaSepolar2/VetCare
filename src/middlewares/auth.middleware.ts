@@ -1,5 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
+
+import { prisma } from '../config/prisma';
 import { AppError } from './error.middleware';
 
 interface TokenPayload {
@@ -8,11 +10,11 @@ interface TokenPayload {
   tipo: string;
 }
 
-export function authMiddleware(
+export async function authMiddleware(
   req: Request,
   res: Response,
   next: NextFunction
-): void {
+): Promise<void> {
   const authHeader = req.headers.authorization;
 
   if (!authHeader) {
@@ -21,7 +23,10 @@ export function authMiddleware(
 
   const partes = authHeader.split(' ');
 
-  if (partes.length !== 2 || partes[0] !== 'Bearer') {
+  if (
+    partes.length !== 2 ||
+    partes[0] !== 'Bearer'
+  ) {
     throw new AppError(
       'Token mal formatado. Utilize o formato: Bearer <token>.',
       401
@@ -36,14 +41,40 @@ export function authMiddleware(
       process.env.JWT_SECRET as string
     ) as TokenPayload;
 
+    const usuario = await prisma.usuario.findUnique({
+      where: {
+        id: payload.id,
+      },
+      include: {
+        permissoes: true,
+      },
+    });
+
+    if (!usuario) {
+      throw new AppError(
+        'Usuário não encontrado.',
+        401
+      );
+    }
+
     req.user = {
-      id: payload.id,
-      usuario: payload.usuario,
-      tipo: payload.tipo,
+      id: usuario.id,
+      usuario: usuario.usuario,
+      tipo: usuario.tipo,
+      permissoes: usuario.permissoes.map(
+        (item) => item.permissao
+      ),
     };
 
     next();
-  } catch {
-    throw new AppError('Token inválido ou expirado.', 401);
+  } catch (erro) {
+    if (erro instanceof AppError) {
+      throw erro;
+    }
+
+    throw new AppError(
+      'Token inválido ou expirado.',
+      401
+    );
   }
 }

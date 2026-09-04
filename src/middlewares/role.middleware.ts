@@ -1,14 +1,15 @@
 import { Request, Response, NextFunction } from 'express';
+
 import { AppError } from './error.middleware';
 
-export function somenteAdmin(
+export function somenteAdminPrincipal(
   req: Request,
   res: Response,
   next: NextFunction
 ): void {
-  if (req.user?.tipo !== 'ADMIN') {
+  if (req.user?.tipo !== 'ADMIN_PRINCIPAL') {
     throw new AppError(
-      'Acesso permitido somente para administradores.',
+      'Acesso permitido somente ao Administrador Principal.',
       403
     );
   }
@@ -16,17 +17,17 @@ export function somenteAdmin(
   next();
 }
 
-export function somenteAdminOuFuncionario(
+export function somenteAdmin(
   req: Request,
   res: Response,
   next: NextFunction
 ): void {
   if (
-    req.user?.tipo !== 'ADMIN' &&
-    req.user?.tipo !== 'FUNCIONARIO'
+    req.user?.tipo !== 'ADMIN_PRINCIPAL' &&
+    req.user?.tipo !== 'ADMIN'
   ) {
     throw new AppError(
-      'Usuário sem permissão para realizar esta ação.',
+      'Acesso permitido somente para administradores.',
       403
     );
   }
