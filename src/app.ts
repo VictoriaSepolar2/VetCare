@@ -1,25 +1,53 @@
-import express from 'express';
-import cors from 'cors';
-import { errorHandler } from './middlewares/error.middleware';
-import authRoutes from './routes/auth.routes';
-import usuarioRoutes from './routes/usuario.routes';
+import express from 'express'
+import cors from 'cors'
 
-const app = express();
+import swaggerUi from 'swagger-ui-express'
+import { swaggerSpec } from './config/swagger'
 
-app.use(express.json());
+import { errorHandler } from './middlewares/error.middleware'
 
-app.use(cors());
+import authRoutes from './routes/auth.routes'
+import usuarioRoutes from './routes/usuario.routes'
+import clienteRoutes from './routes/cliente.routes'
+import petRoutes from './routes/pet.routes'
+import veterinarioRoutes from './routes/veterinario.routes'
+import consultaRoutes from './routes/consulta.routes'
+import prontuarioRoutes from './routes/prontuario.routes'
 
-app.get('/hello', (req, res) => {
-  res.json('Hello World!');
-});
+const app = express()
 
-// Rotas de autenticação
-app.use('/auth', authRoutes);
+app.use(cors())
 
-// Rotas de usuários
-app.use('/usuarios', usuarioRoutes);
+app.use(express.json())
 
-app.use(errorHandler);
+app.use(
+  '/api-docs',
+  swaggerUi.serve,
+  swaggerUi.setup(swaggerSpec)
+)
 
-export { app };
+app.get('/api-docs.json', (_req, res) => {
+  res.json(swaggerSpec)
+})
+
+app.get('/hello', (_req, res) => {
+  res.json('Hello World!')
+})
+
+app.use('/auth', authRoutes)
+
+app.use('/usuarios', usuarioRoutes)
+
+app.use('/clientes', clienteRoutes)
+
+app.use('/pets', petRoutes)
+
+app.use('/veterinarios', veterinarioRoutes)
+
+app.use('/consultas', consultaRoutes)
+
+app.use('/prontuarios', prontuarioRoutes)
+
+app.use(errorHandler)
+
+export { app }

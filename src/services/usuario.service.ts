@@ -3,58 +3,38 @@ import { prisma } from '../config/prisma';
 import { AppError } from '../middlewares/error.middleware';
 
 interface CriarUsuarioInput {
+  nome: string;
   usuario: string;
+  email: string;
   senha: string;
-  tipo: string;
-  permissoes?: string[];
 }
 
 export async function criarUsuario(
   dados: CriarUsuarioInput
 ) {
-  const usuarioExistente =
-    await prisma.usuario.findUnique({
-      where: {
-        usuario: dados.usuario,
-      },
-    });
+  const usuarioExistente = await prisma.usuario.findUnique({
+    where: {
+      usuario: dados.usuario,
+    },
+  });
 
   if (usuarioExistente) {
     throw new AppError(
-      'Este usuário já existe.',
+      'Este nome de usuário já está cadastrado.',
       400
     );
   }
 
-  const tiposAdministradores = [
-    'ADMIN_PRINCIPAL',
-    'ADMIN',
-  ];
+  const emailExistente = await prisma.usuario.findUnique({
+    where: {
+      email: dados.email,
+    },
+  });
 
-  if (
-    tiposAdministradores.includes(dados.tipo)
-  ) {
-    const quantidadeAdmins =
-      await prisma.usuario.count({
-        where: {
-          tipo: {
-            in: tiposAdministradores,
-          },
-        },
-      });
-
-    if (quantidadeAdmins >= 5) {
-      throw new AppError(
-        'O VetCare já atingiu o limite de 5 administradores.',
-        400
-      );
-    }
-  }
-
-  if (dados.tipo === 'ADMIN_PRINCIPAL') {
+  if (emailExistente) {
     throw new AppError(
-      'Não é permitido criar outro Administrador Principal.',
-      403
+      'Este e-mail já está cadastrado.',
+      400
     );
   }
 
@@ -65,55 +45,30 @@ export async function criarUsuario(
 
   const usuario = await prisma.usuario.create({
     data: {
+      nome: dados.nome,
       usuario: dados.usuario,
+      email: dados.email,
       senha: senhaHash,
-      tipo: dados.tipo,
-      permissoes: {
-        create: (dados.permissoes || []).map(
-          (permissao) => ({
-            permissao,
-          })
-        ),
-      },
-    },
-    include: {
-      permissoes: true,
     },
   });
 
   return {
     id: usuario.id,
+    nome: usuario.nome,
     usuario: usuario.usuario,
-    tipo: usuario.tipo,
-    permissoes: usuario.permissoes.map(
-      (item) => item.permissao
-    ),
+    email: usuario.email,
+    criadoEm: usuario.criadoEm,
   };
 }
 
 export async function listarUsuarios() {
-  const usuarios =
-    await prisma.usuario.findMany({
-      select: {
-        id: true,
-        usuario: true,
-        tipo: true,
-        criadoEm: true,
-        permissoes: {
-          select: {
-            permissao: true,
-          },
-        },
-      },
-    });
-
-  return usuarios.map((usuario) => ({
-    id: usuario.id,
-    usuario: usuario.usuario,
-    tipo: usuario.tipo,
-    criadoEm: usuario.criadoEm,
-    permissoes: usuario.permissoes.map(
-      (item) => item.permissao
-    ),
-  }));
+  return prisma.usuario.findMany({
+    select: {
+      id: true,
+      nome: true,
+      usuario: true,
+      email: true,
+      criadoEm: true,
+    },
+  });
 }

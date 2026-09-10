@@ -1,4 +1,9 @@
-import { Request, Response, NextFunction } from 'express';
+import {
+  Request,
+  Response,
+  NextFunction,
+} from 'express';
+
 import jwt from 'jsonwebtoken';
 
 import { prisma } from '../config/prisma';
@@ -7,21 +12,25 @@ import { AppError } from './error.middleware';
 interface TokenPayload {
   id: number;
   usuario: string;
-  tipo: string;
 }
 
 export async function authMiddleware(
   req: Request,
-  res: Response,
+  _res: Response,
   next: NextFunction
 ): Promise<void> {
-  const authHeader = req.headers.authorization;
+  const authHeader =
+    req.headers.authorization;
 
   if (!authHeader) {
-    throw new AppError('Token não fornecido.', 401);
+    throw new AppError(
+      'Token não fornecido.',
+      401
+    );
   }
 
-  const partes = authHeader.split(' ');
+  const partes =
+    authHeader.split(' ');
 
   if (
     partes.length !== 2 ||
@@ -41,14 +50,12 @@ export async function authMiddleware(
       process.env.JWT_SECRET as string
     ) as TokenPayload;
 
-    const usuario = await prisma.usuario.findUnique({
-      where: {
-        id: payload.id,
-      },
-      include: {
-        permissoes: true,
-      },
-    });
+    const usuario =
+      await prisma.usuario.findUnique({
+        where: {
+          id: payload.id,
+        },
+      });
 
     if (!usuario) {
       throw new AppError(
@@ -60,10 +67,6 @@ export async function authMiddleware(
     req.user = {
       id: usuario.id,
       usuario: usuario.usuario,
-      tipo: usuario.tipo,
-      permissoes: usuario.permissoes.map(
-        (item) => item.permissao
-      ),
     };
 
     next();

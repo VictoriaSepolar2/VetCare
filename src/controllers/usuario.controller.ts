@@ -1,42 +1,35 @@
 import { Request, Response } from 'express';
-
-import * as usuarioService
-  from '../services/usuario.service';
+import * as usuarioService from '../services/usuario.service';
 
 export async function criar(
   req: Request,
   res: Response
 ): Promise<Response> {
-
   const {
+    nome,
     usuario,
+    email,
     senha,
-    tipo,
-    permissoes,
   } = req.body;
 
   const usuarioCriado =
     await usuarioService.criarUsuario({
+      nome,
       usuario,
+      email,
       senha,
-      tipo,
-      permissoes,
     });
 
-  return res.status(201).json(
-    usuarioCriado
-  );
+  return res.status(201).json(usuarioCriado);
 }
 
 export async function listar(
-  req: Request,
+  _req: Request,
   res: Response
 ): Promise<Response> {
 
   const usuarios =
     await usuarioService.listarUsuarios();
 
-  return res.status(200).json(
-    usuarios
-  );
+  return res.status(200).json(usuarios);
 }

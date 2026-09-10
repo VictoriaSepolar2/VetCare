@@ -35,8 +35,8 @@ CREATE TABLE "consultas" (
     "veterinarioId" INTEGER NOT NULL,
     "dataConsulta" DATETIME NOT NULL,
     "statusConsulta" TEXT NOT NULL DEFAULT 'Agendada',
-    CONSTRAINT "consultas_petId_fkey" FOREIGN KEY ("petId") REFERENCES "pets" ("id") ON DELETE RESTRICT ON UPDATE CASCADE,
-    CONSTRAINT "consultas_veterinarioId_fkey" FOREIGN KEY ("veterinarioId") REFERENCES "veterinarios" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
+    CONSTRAINT "consultas_veterinarioId_fkey" FOREIGN KEY ("veterinarioId") REFERENCES "veterinarios" ("id") ON DELETE RESTRICT ON UPDATE CASCADE,
+    CONSTRAINT "consultas_petId_fkey" FOREIGN KEY ("petId") REFERENCES "pets" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
 -- CreateTable
@@ -52,9 +52,11 @@ CREATE TABLE "prontuarios" (
 -- CreateTable
 CREATE TABLE "usuarios" (
     "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "nome" TEXT NOT NULL,
     "usuario" TEXT NOT NULL,
+    "email" TEXT NOT NULL,
     "senha" TEXT NOT NULL,
-    "tipo" TEXT NOT NULL
+    "criadoEm" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 -- CreateIndex
@@ -74,3 +76,6 @@ CREATE UNIQUE INDEX "prontuarios_consultaId_key" ON "prontuarios"("consultaId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "usuarios_usuario_key" ON "usuarios"("usuario");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "usuarios_email_key" ON "usuarios"("email");

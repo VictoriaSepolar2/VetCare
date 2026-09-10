@@ -52,13 +52,14 @@ async function main() {
     },
   });
 
-  await prisma.usuario.create({
-    data: {
-      usuario: 'admin',
-      senha: senhaHash,
-      tipo: 'ADMIN',
-    },
-  });
+ await prisma.usuario.create({
+  data: {
+    nome: 'Administrador',
+    usuario: 'admin',
+    email: 'admin@vetcare.com',
+    senha: senhaHash,
+  },
+});
 
   console.log('----------------------------------------------------');
   console.log('Seed concluído com sucesso!');

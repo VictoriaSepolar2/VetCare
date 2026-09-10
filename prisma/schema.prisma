@@ -26,32 +26,35 @@ model Pet {
   especie        String
   raca           String
   dataNascimento DateTime
-  consultas      Consulta[]
-  cliente        Cliente    @relation(fields: [clienteId], references: [id])
+
+  consultas Consulta[]
+  cliente   Cliente @relation(fields: [clienteId], references: [id])
 
   @@map("pets")
 }
 
 model Veterinario {
-  id            Int        @id @default(autoincrement())
+  id            Int    @id @default(autoincrement())
   nome          String
-  crmv          String     @unique
+  crmv          String @unique
   especialidade String
-  email         String     @unique
-  consultas     Consulta[]
+  email         String @unique
+
+  consultas Consulta[]
 
   @@map("veterinarios")
 }
 
 model Consulta {
-  id             Int         @id @default(autoincrement())
+  id             Int      @id @default(autoincrement())
   petId          Int
   veterinarioId  Int
   dataConsulta   DateTime
-  statusConsulta String      @default("Agendada")
-  veterinario    Veterinario @relation(fields: [veterinarioId], references: [id])
-  pet            Pet         @relation(fields: [petId], references: [id])
-  prontuario     Prontuario?
+  statusConsulta String   @default("Agendada")
+
+  veterinario Veterinario @relation(fields: [veterinarioId], references: [id])
+  pet         Pet         @relation(fields: [petId], references: [id])
+  prontuario  Prontuario?
 
   @@map("consultas")
 }
@@ -62,28 +65,19 @@ model Prontuario {
   diagnostico            String
   medicamentosPrescritos String
   dataRetorno            DateTime?
-  consulta               Consulta  @relation(fields: [consultaId], references: [id])
+
+  consulta Consulta @relation(fields: [consultaId], references: [id])
 
   @@map("prontuarios")
 }
 
 model Usuario {
-  id         Int                @id @default(autoincrement())
-  usuario    String             @unique
+  id         Int      @id @default(autoincrement())
+  nome       String
+  usuario    String   @unique
+  email      String   @unique
   senha      String
-  tipo       String
-  criadoEm   DateTime           @default(now())
-  permissoes PermissaoUsuario[]
+  criadoEm   DateTime @default(now())
 
   @@map("usuarios")
-}
-
-model PermissaoUsuario {
-  id        Int     @id @default(autoincrement())
-  usuarioId Int
-  permissao String
-  usuario   Usuario @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
-
-  @@unique([usuarioId, permissao])
-  @@map("permissoes_usuarios")
 }
