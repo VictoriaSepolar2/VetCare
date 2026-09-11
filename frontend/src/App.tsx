@@ -1,57 +1,58 @@
 import { useState, type FormEvent } from 'react'
 import './App.css'
 
-type Tela = 'login' | 'cadastro' | 'inicio'
+import Cliente from './components/clientes/cliente'
+import Consulta from './components/consulta/consulta'
+import Pet from './components/pet/pet'
+import Prontuario from './components/prontuario/prontuario'
+import Usuario from './components/usuario/usuario'
+import Veterinario from './components/veterinario/veterinario'
+
+type Tela =
+  | 'login'
+  | 'cadastro'
+  | 'inicio'
+  | 'clientes'
+  | 'pets'
+  | 'veterinarios'
+  | 'consultas'
+  | 'prontuarios'
+  | 'usuarios'
 
 function App() {
-  const [tela, setTela] = useState<Tela>(() => {
-    const token = localStorage.getItem('token')
-    return token ? 'inicio' : 'login'
-  })
+  const [tela, setTela] = useState<Tela>(
+    localStorage.getItem('token')
+      ? 'inicio'
+      : 'login'
+  )
 
-  // Login
-  const [usuario, setUsuario] = useState('')
-  const [senha, setSenha] = useState('')
+  const [usuario, setUsuario] = useState(
+    localStorage.getItem('usuario') || ''
+  )
 
-  // Cadastro
+  const [loginUsuario, setLoginUsuario] =
+    useState('')
+
+  const [loginSenha, setLoginSenha] =
+    useState('')
+
   const [nome, setNome] = useState('')
-  const [novoUsuario, setNovoUsuario] = useState('')
-  const [email, setEmail] = useState('')
-  const [novaSenha, setNovaSenha] = useState('')
-  const [confirmarSenha, setConfirmarSenha] = useState('')
+  const [cadUsuario, setCadUsuario] = useState('')
+  const [cadEmail, setCadEmail] = useState('')
+  const [cadSenha, setCadSenha] = useState('')
 
   const [erro, setErro] = useState('')
   const [sucesso, setSucesso] = useState('')
-  const [carregando, setCarregando] = useState(false)
-
-  function limparMensagens() {
-    setErro('')
-    setSucesso('')
-  }
-
-  function irParaCadastro() {
-    limparMensagens()
-    setTela('cadastro')
-  }
-
-  function irParaLogin() {
-    limparMensagens()
-    setTela('login')
-  }
+  const [carregando, setCarregando] =
+    useState(false)
 
   async function entrar(e: FormEvent) {
     e.preventDefault()
 
-    limparMensagens()
-
-    if (!usuario.trim() || !senha) {
-      setErro('Preencha usuário e senha.')
-      return
-    }
+    setErro('')
+    setCarregando(true)
 
     try {
-      setCarregando(true)
-
       const resposta = await fetch(
         'http://localhost:3333/auth/login',
         {
@@ -60,8 +61,8 @@ function App() {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            usuario: usuario.trim(),
-            senha,
+            usuario: loginUsuario,
+            senha: loginSenha,
           }),
         }
       )
@@ -77,14 +78,25 @@ function App() {
         return
       }
 
-      localStorage.setItem('token', dados.token)
+      localStorage.setItem(
+        'token',
+        dados.token
+      )
+
       localStorage.setItem(
         'usuario',
-        JSON.stringify(dados.usuario)
+        dados.usuario?.nome ||
+        dados.usuario?.usuario ||
+        loginUsuario
+      )
+
+      setUsuario(
+        dados.usuario?.nome ||
+        dados.usuario?.usuario ||
+        loginUsuario
       )
 
       setTela('inicio')
-      setSenha('')
     } catch {
       setErro(
         'Não foi possível conectar ao servidor.'
@@ -94,37 +106,14 @@ function App() {
     }
   }
 
-  async function cadastrar(e: FormEvent) {
+  async function cadastrarUsuario(e: FormEvent) {
     e.preventDefault()
 
-    limparMensagens()
-
-    if (
-      !nome.trim() ||
-      !novoUsuario.trim() ||
-      !email.trim() ||
-      !novaSenha ||
-      !confirmarSenha
-    ) {
-      setErro('Preencha todos os campos.')
-      return
-    }
-
-    if (novaSenha !== confirmarSenha) {
-      setErro('As senhas não são iguais.')
-      return
-    }
-
-    if (novaSenha.length < 6) {
-      setErro(
-        'A senha deve ter pelo menos 6 caracteres.'
-      )
-      return
-    }
+    setErro('')
+    setSucesso('')
+    setCarregando(true)
 
     try {
-      setCarregando(true)
-
       const resposta = await fetch(
         'http://localhost:3333/usuarios',
         {
@@ -133,10 +122,10 @@ function App() {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            nome: nome.trim(),
-            usuario: novoUsuario.trim(),
-            email: email.trim(),
-            senha: novaSenha,
+            nome,
+            usuario: cadUsuario,
+            email: cadEmail,
+            senha: cadSenha,
           }),
         }
       )
@@ -147,24 +136,24 @@ function App() {
         setErro(
           dados.erro ||
           dados.message ||
-          'Não foi possível criar a conta.'
+          'Não foi possível cadastrar.'
         )
         return
       }
 
       setSucesso(
-        'Conta criada com sucesso! Agora faça seu login.'
+        'Usuário cadastrado com sucesso!'
       )
 
-      setUsuario(novoUsuario.trim())
-
       setNome('')
-      setNovoUsuario('')
-      setEmail('')
-      setNovaSenha('')
-      setConfirmarSenha('')
+      setCadUsuario('')
+      setCadEmail('')
+      setCadSenha('')
 
-      setTela('login')
+      setTimeout(() => {
+        setTela('login')
+        setSucesso('')
+      }, 1000)
     } catch {
       setErro(
         'Não foi possível conectar ao servidor.'
@@ -179,204 +168,129 @@ function App() {
     localStorage.removeItem('usuario')
 
     setUsuario('')
-    setSenha('')
-    setErro('')
-    setSucesso('')
+    setLoginUsuario('')
+    setLoginSenha('')
     setTela('login')
   }
 
-  function usuarioLogado() {
-    try {
-      const dados = localStorage.getItem('usuario')
-
-      if (!dados) {
-        return null
-      }
-
-      return JSON.parse(dados)
-    } catch {
-      return null
-    }
+  if (tela === 'clientes') {
+    return (
+      <Cliente
+        onVoltar={() => setTela('inicio')}
+      />
+    )
   }
 
-  if (tela === 'inicio') {
-    const usuarioAtual = usuarioLogado()
-
+  if (tela === 'pets') {
     return (
-      <main className="home-page">
-        <div className="home-card">
+      <Pet
+        onVoltar={() => setTela('inicio')}
+      />
+    )
+  }
 
-          <div className="home-logo">
-            <span>🐾</span>
-            <h1>VetCare</h1>
-          </div>
+  if (tela === 'veterinarios') {
+    return (
+      <Veterinario
+        onVoltar={() => setTela('inicio')}
+      />
+    )
+  }
 
-          <h2>
-            Bem-vindo ao VetCare!
-          </h2>
+  if (tela === 'consultas') {
+    return (
+      <Consulta
+        onVoltar={() => setTela('inicio')}
+      />
+    )
+  }
 
-          <p className="home-text">
-            Olá,{' '}
-            <strong>
-              {usuarioAtual?.nome ||
-                usuarioAtual?.usuario ||
-                'usuário'}
-            </strong>
-            !
-          </p>
+  if (tela === 'prontuarios') {
+    return (
+      <Prontuario
+        onVoltar={() => setTela('inicio')}
+      />
+    )
+  }
 
-          <p className="home-description">
-            Seu acesso foi realizado com sucesso.
-          </p>
-
-          <div className="home-actions">
-            <button
-              type="button"
-              className="primary-button"
-            >
-              🐶 Clientes
-            </button>
-
-            <button
-              type="button"
-              className="primary-button"
-            >
-              🐾 Pets
-            </button>
-
-            <button
-              type="button"
-              className="primary-button"
-            >
-              🩺 Veterinários
-            </button>
-
-            <button
-              type="button"
-              className="primary-button"
-            >
-              📅 Consultas
-            </button>
-
-            <button
-              type="button"
-              className="primary-button"
-            >
-              📋 Prontuários
-            </button>
-          </div>
-
-          <button
-            type="button"
-            className="logout-button"
-            onClick={sair}
-          >
-            Sair
-          </button>
-
-        </div>
-      </main>
+  if (tela === 'usuarios') {
+    return (
+      <Usuario
+        onVoltar={() => setTela('inicio')}
+      />
     )
   }
 
   if (tela === 'cadastro') {
     return (
-      <main className="login-page">
-        <div className="login-card">
+      <div className="auth-page">
 
-          <div className="logo">
-            <span>🐾</span>
-            <h1>VetCare</h1>
-          </div>
+        <div className="auth-card">
 
-          <p className="subtitle">
-            Crie sua conta
+          <h1>🐾 VetCare</h1>
+
+          <h2>Criar conta</h2>
+
+          <p>
+            Cadastre um novo usuário.
           </p>
 
-          <form onSubmit={cadastrar}>
+          {erro && (
+            <div className="mensagem-erro">
+              {erro}
+            </div>
+          )}
 
-            <label htmlFor="nome">
-              Nome completo
-            </label>
+          {sucesso && (
+            <div className="mensagem-sucesso">
+              {sucesso}
+            </div>
+          )}
+
+          <form onSubmit={cadastrarUsuario}>
 
             <input
-              id="nome"
               type="text"
-              placeholder="Digite seu nome completo"
+              placeholder="Nome"
               value={nome}
               onChange={(e) =>
                 setNome(e.target.value)
               }
             />
 
-            <label htmlFor="novoUsuario">
-              Nome de usuário
-            </label>
-
             <input
-              id="novoUsuario"
               type="text"
-              placeholder="Escolha um nome de usuário"
-              value={novoUsuario}
+              placeholder="Usuário"
+              value={cadUsuario}
               onChange={(e) =>
-                setNovoUsuario(e.target.value)
+                setCadUsuario(e.target.value)
               }
             />
 
-            <label htmlFor="email">
-              E-mail
-            </label>
-
             <input
-              id="email"
               type="email"
-              placeholder="Digite seu e-mail"
-              value={email}
+              placeholder="E-mail"
+              value={cadEmail}
               onChange={(e) =>
-                setEmail(e.target.value)
+                setCadEmail(e.target.value)
               }
             />
-
-            <label htmlFor="novaSenha">
-              Senha
-            </label>
 
             <input
-              id="novaSenha"
               type="password"
-              placeholder="Digite sua senha"
-              value={novaSenha}
+              placeholder="Senha"
+              value={cadSenha}
               onChange={(e) =>
-                setNovaSenha(e.target.value)
+                setCadSenha(e.target.value)
               }
             />
-
-            <label htmlFor="confirmarSenha">
-              Confirmar senha
-            </label>
-
-            <input
-              id="confirmarSenha"
-              type="password"
-              placeholder="Digite a senha novamente"
-              value={confirmarSenha}
-              onChange={(e) =>
-                setConfirmarSenha(e.target.value)
-              }
-            />
-
-            {erro && (
-              <p className="erro">
-                {erro}
-              </p>
-            )}
 
             <button
               type="submit"
               disabled={carregando}
             >
               {carregando
-                ? 'Criando conta...'
+                ? 'Cadastrando...'
                 : 'Criar conta'}
             </button>
 
@@ -385,74 +299,153 @@ function App() {
           <button
             type="button"
             className="link-button"
-            onClick={irParaLogin}
+            onClick={() => {
+              setErro('')
+              setTela('login')
+            }}
           >
-            Já tenho uma conta
+            ← Voltar para login
           </button>
 
-          <p className="footer">
-            © 2026 VetCare
-          </p>
+        </div>
+
+      </div>
+    )
+  }
+
+  if (tela === 'inicio') {
+    return (
+      <main className="home-page">
+
+        <div className="home-header">
+
+          <div>
+            <h1>🐾 VetCare</h1>
+
+            <p>
+              Bem-vindo, {usuario}!
+            </p>
+          </div>
+
+          <button
+            className="logout-button"
+            onClick={sair}
+          >
+            Sair
+          </button>
 
         </div>
+
+        <div className="home-content">
+
+          <h2>Painel principal</h2>
+
+          <p>
+            Escolha uma área para continuar.
+          </p>
+
+          <div className="menu-grid">
+
+            <button
+              className="primary-button"
+              onClick={() =>
+                setTela('clientes')
+              }
+            >
+              👥 Clientes
+            </button>
+
+            <button
+              className="primary-button"
+              onClick={() =>
+                setTela('pets')
+              }
+            >
+              🐾 Pets
+            </button>
+
+            <button
+              className="primary-button"
+              onClick={() =>
+                setTela('veterinarios')
+              }
+            >
+              🩺 Veterinários
+            </button>
+
+            <button
+              className="primary-button"
+              onClick={() =>
+                setTela('consultas')
+              }
+            >
+              📅 Consultas
+            </button>
+
+            <button
+              className="primary-button"
+              onClick={() =>
+                setTela('prontuarios')
+              }
+            >
+              📋 Prontuários
+            </button>
+
+            <button
+              className="primary-button"
+              onClick={() =>
+                setTela('usuarios')
+              }
+            >
+              👤 Usuários
+            </button>
+
+          </div>
+
+        </div>
+
       </main>
     )
   }
 
   return (
-    <main className="login-page">
-      <div className="login-card">
+    <div className="auth-page">
 
-        <div className="logo">
-          <span>🐾</span>
-          <h1>VetCare</h1>
-        </div>
+      <div className="auth-card">
 
-        <p className="subtitle">
-          Clinica Veterinário
+        <h1>🐾 VetCare</h1>
+
+        <h2>Entrar</h2>
+
+        <p>
+          Acesse o sistema da clínica.
         </p>
+
+        {erro && (
+          <div className="mensagem-erro">
+            {erro}
+          </div>
+        )}
 
         <form onSubmit={entrar}>
 
-          <label htmlFor="usuario">
-            Usuário
-          </label>
-
           <input
-            id="usuario"
             type="text"
-            placeholder="Digite seu usuário"
-            value={usuario}
+            placeholder="Usuário"
+            value={loginUsuario}
             onChange={(e) =>
-              setUsuario(e.target.value)
+              setLoginUsuario(e.target.value)
             }
           />
-
-          <label htmlFor="senha">
-            Senha
-          </label>
 
           <input
-            id="senha"
             type="password"
-            placeholder="Digite sua senha"
-            value={senha}
+            placeholder="Senha"
+            value={loginSenha}
             onChange={(e) =>
-              setSenha(e.target.value)
+              setLoginSenha(e.target.value)
             }
           />
-
-          {erro && (
-            <p className="erro">
-              {erro}
-            </p>
-          )}
-
-          {sucesso && (
-            <p className="sucesso">
-              {sucesso}
-            </p>
-          )}
 
           <button
             type="submit"
@@ -465,26 +458,20 @@ function App() {
 
         </form>
 
-        <div className="cadastro-area">
-          <p>
-            Ainda não possui uma conta?
-          </p>
-
-          <button
-            type="button"
-            className="link-button"
-            onClick={irParaCadastro}
-          >
-            Criar minha conta
-          </button>
-        </div>
-
-        <p className="footer">
-          © 2026 VetCare
-        </p>
+        <button
+          type="button"
+          className="link-button"
+          onClick={() => {
+            setErro('')
+            setTela('cadastro')
+          }}
+        >
+          Criar novo usuário
+        </button>
 
       </div>
-    </main>
+
+    </div>
   )
 }
 

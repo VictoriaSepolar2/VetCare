@@ -1,0 +1,237 @@
+.cadastro-page {
+  min-height: 100vh;
+  padding: 30px;
+  background: #f3f0f8;
+}
+
+.cadastro-container {
+  width: 100%;
+  max-width: 1150px;
+  margin: 0 auto;
+}
+
+.cadastro-header {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 25px;
+}
+
+.cadastro-header h1 {
+  margin: 0;
+  color: #4d286f;
+  font-size: 32px;
+}
+
+.cadastro-header p {
+  margin: 5px 0 0;
+  color: #777;
+}
+
+.voltar-button,
+.novo-button,
+.cancelar-button,
+.salvar-button {
+  padding: 12px 18px;
+  border-radius: 10px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.voltar-button {
+  border: 1px solid #ddd;
+  background: white;
+  color: #555;
+}
+
+.novo-button,
+.salvar-button {
+  border: none;
+  background: #7b4bb7;
+  color: white;
+}
+
+.novo-button:hover,
+.salvar-button:hover {
+  background: #67399d;
+}
+
+.cancelar-button {
+  border: 1px solid #ccc;
+  background: white;
+  color: #555;
+}
+
+.mensagem-erro,
+.mensagem-sucesso {
+  padding: 13px;
+  margin-bottom: 20px;
+  border-radius: 10px;
+  font-weight: bold;
+}
+
+.mensagem-erro {
+  background: #ffe8e8;
+  color: #b42318;
+}
+
+.mensagem-sucesso {
+  background: #e8f7ed;
+  color: #207a3d;
+}
+
+.form-card,
+.lista-card {
+  background: white;
+  padding: 25px;
+  margin-bottom: 25px;
+  border-radius: 15px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+}
+
+.form-card h2,
+.lista-card h2 {
+  margin-top: 0;
+  color: #4d286f;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+
+.campo {
+  display: flex;
+  flex-direction: column;
+}
+
+.campo label {
+  margin-bottom: 7px;
+  font-weight: bold;
+  color: #403746;
+}
+
+.campo input,
+.campo select,
+.campo textarea {
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 15px;
+  box-sizing: border-box;
+}
+
+.campo textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+.campo-grande {
+  grid-column: 1 / -1;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 25px;
+}
+
+.tabela {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.tabela-header,
+.tabela-linha {
+  min-width: 700px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 15px;
+  padding: 15px;
+  align-items: center;
+}
+
+.tabela-header {
+  border-bottom: 2px solid #eee;
+  color: #777;
+  font-weight: bold;
+}
+
+.tabela-linha {
+  border-bottom: 1px solid #eee;
+  color: #444;
+}
+
+.lista-vazia {
+  padding: 40px;
+  text-align: center;
+  color: #888;
+  border: 2px dashed #ddd;
+  border-radius: 12px;
+}
+
+.acoes {
+  display: flex;
+  gap: 8px;
+}
+
+.acoes button {
+  padding: 7px 10px;
+  border: none;
+  border-radius: 7px;
+  background: #7b4bb7;
+  color: white;
+  cursor: pointer;
+}
+
+.prontuarios-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+.prontuario-card {
+  border: 1px solid #eee;
+  border-radius: 12px;
+  padding: 20px;
+}
+
+.prontuario-card h3 {
+  margin-top: 0;
+  color: #4d286f;
+}
+
+@media (max-width: 700px) {
+  .cadastro-page {
+    padding: 20px;
+  }
+
+  .cadastro-header {
+    grid-template-columns: 1fr;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .campo-grande {
+    grid-column: auto;
+  }
+
+  .form-actions {
+    flex-direction: column;
+  }
+
+  .form-actions button,
+  .novo-button {
+    width: 100%;
+  }
+
+  .prontuarios-grid {
+    grid-template-columns: 1fr;
+  }
+}
