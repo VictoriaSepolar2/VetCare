@@ -67,3 +67,14 @@ export async function cancelar(
 
   res.status(200).json(consulta);
 }
+
+export async function excluir(
+  req: Request,
+  res: Response,
+): Promise<void> {
+  const id = Number(req.params.id);
+
+  const resultado = await consultaService.excluirConsulta(id);
+
+  res.status(200).json(resultado);
+}

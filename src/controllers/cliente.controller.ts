@@ -30,3 +30,14 @@ export async function buscarPorId(
 
   res.status(200).json(cliente);
 }
+
+export async function excluir(
+  req: Request,
+  res: Response
+): Promise<void> {
+  const id = Number(req.params.id);
+
+  const resultado = await clienteService.excluirCliente(id);
+
+  res.status(200).json(resultado);
+}

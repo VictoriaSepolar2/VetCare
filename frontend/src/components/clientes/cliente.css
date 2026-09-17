@@ -207,7 +207,7 @@
 .cliente-linha {
   min-width: 700px;
   display: grid;
-  grid-template-columns: 1.2fr 1fr 1.5fr 1fr;
+  grid-template-columns: 1.2fr 1fr 1.5fr 1fr 110px;
   gap: 15px;
   padding: 15px;
   align-items: center;
@@ -301,3 +301,18 @@
   }
 }
 
+
+
+.excluir-button {
+  border: none;
+  background: #dc3545;
+  color: white;
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.excluir-button:hover {
+  background: #b52a37;
+}

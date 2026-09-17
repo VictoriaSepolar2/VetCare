@@ -114,3 +114,29 @@ export async function atualizarPet(
 
   return petAtualizado;
 }
+
+export async function excluirPet(id: number) {
+  const pet = await prisma.pet.findUnique({
+    where: { id },
+    include: { consultas: true },
+  });
+
+  if (!pet) {
+    throw new AppError('Pet não encontrado.', 404);
+  }
+
+  if (pet.consultas.length > 0) {
+    throw new AppError(
+      'Este pet possui consultas cadastradas. Exclua as consultas primeiro.',
+      409,
+    );
+  }
+
+  await prisma.pet.delete({
+    where: { id },
+  });
+
+  return {
+    mensagem: 'Pet excluído com sucesso.',
+  };
+}

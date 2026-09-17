@@ -167,6 +167,49 @@ function Prontuarios({
     }
   }
 
+  async function excluirProntuario(id: number) {
+    const confirmar = window.confirm(
+      'Tem certeza que deseja excluir este prontuário?'
+    )
+
+    if (!confirmar) return
+
+    setErro('')
+    setSucesso('')
+
+    try {
+      const token = localStorage.getItem('token')
+
+      const resposta = await fetch(
+        `http://localhost:3333/prontuarios/${id}`,
+        {
+          method: 'DELETE',
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+
+      const dados = await resposta.json()
+
+      if (!resposta.ok) {
+        setErro(
+          dados.erro ||
+          dados.message ||
+          'Não foi possível excluir o prontuário.'
+        )
+        return
+      }
+
+      setProntuarios((listaAtual) =>
+        listaAtual.filter((item) => item.id !== id)
+      )
+      setSucesso('Prontuário excluído com sucesso!')
+    } catch {
+      setErro('Não foi possível conectar ao servidor.')
+    }
+  }
+
   return (
     <main className="cadastro-page">
       <div className="cadastro-container">
@@ -362,6 +405,15 @@ function Prontuarios({
                       ).toLocaleString('pt-BR')}
                     </p>
                   )}
+
+                  <button
+                    className="excluir-button"
+                    onClick={() =>
+                      excluirProntuario(prontuario.id)
+                    }
+                  >
+                    🗑 Excluir
+                  </button>
                 </div>
               ))}
 

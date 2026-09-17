@@ -189,4 +189,32 @@ router.patch('/:id/status', consultaController.atualizarStatus);
  */
 router.patch('/:id/cancelar', consultaController.cancelar);
 
+
+/**
+ * @openapi
+ * /consultas/{id}:
+ *   delete:
+ *     tags:
+ *       - Consultas
+ *     summary: Excluir uma consulta
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Consulta excluída com sucesso.
+ *       401:
+ *         description: Token não fornecido ou inválido.
+ *       404:
+ *         description: Consulta não encontrada.
+ *       409:
+ *         description: A consulta possui prontuário vinculado.
+ */
+router.delete('/:id', consultaController.excluir);
+
 export default router;

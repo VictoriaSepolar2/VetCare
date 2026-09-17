@@ -1,4 +1,9 @@
-import { useEffect, useState, type FormEvent } from 'react'
+import {
+  useEffect,
+  useState,
+  type FormEvent,
+} from 'react'
+
 import './Veterinario.css'
 
 interface Veterinario {
@@ -13,33 +18,55 @@ interface VeterinariosProps {
   onVoltar: () => void
 }
 
-function Veterinarios({ onVoltar }: VeterinariosProps) {
-  const [veterinarios, setVeterinarios] = useState<Veterinario[]>([])
-  const [mostrarFormulario, setMostrarFormulario] = useState(false)
+function Veterinarios({
+  onVoltar,
+}: VeterinariosProps) {
+  const [
+    veterinarios,
+    setVeterinarios,
+  ] = useState<Veterinario[]>([])
+
+  const [
+    mostrarFormulario,
+    setMostrarFormulario,
+  ] = useState(false)
 
   const [nome, setNome] = useState('')
   const [crmv, setCrmv] = useState('')
-  const [especialidade, setEspecialidade] = useState('')
+  const [
+    especialidade,
+    setEspecialidade,
+  ] = useState('')
   const [email, setEmail] = useState('')
 
   const [erro, setErro] = useState('')
-  const [sucesso, setSucesso] = useState('')
-  const [carregando, setCarregando] = useState(false)
+  const [sucesso, setSucesso] =
+    useState('')
+
+  const [
+    carregando,
+    setCarregando,
+  ] = useState(false)
 
   async function carregarVeterinarios() {
+    setErro('')
+
     try {
-      const token = localStorage.getItem('token')
+      const token =
+        localStorage.getItem('token')
 
       const resposta = await fetch(
         'http://localhost:3333/veterinarios',
         {
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization:
+              `Bearer ${token}`,
           },
         }
       )
 
-      const dados = await resposta.json()
+      const dados =
+        await resposta.json()
 
       if (!resposta.ok) {
         setErro(
@@ -47,12 +74,15 @@ function Veterinarios({ onVoltar }: VeterinariosProps) {
           dados.message ||
           'Erro ao carregar veterinários.'
         )
+
         return
       }
 
       setVeterinarios(dados)
     } catch {
-      setErro('Não foi possível conectar ao servidor.')
+      setErro(
+        'Não foi possível conectar ao servidor.'
+      )
     }
   }
 
@@ -60,29 +90,42 @@ function Veterinarios({ onVoltar }: VeterinariosProps) {
     carregarVeterinarios()
   }, [])
 
-  async function cadastrarVeterinario(e: FormEvent) {
+  async function cadastrarVeterinario(
+    e: FormEvent
+  ) {
     e.preventDefault()
 
     setErro('')
     setSucesso('')
 
-    if (!nome || !crmv || !especialidade || !email) {
-      setErro('Preencha todos os campos.')
+    if (
+      !nome ||
+      !crmv ||
+      !especialidade ||
+      !email
+    ) {
+      setErro(
+        'Preencha todos os campos.'
+      )
       return
     }
 
     try {
       setCarregando(true)
 
-      const token = localStorage.getItem('token')
+      const token =
+        localStorage.getItem('token')
 
       const resposta = await fetch(
         'http://localhost:3333/veterinarios',
         {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`,
+            'Content-Type':
+              'application/json',
+
+            Authorization:
+              `Bearer ${token}`,
           },
           body: JSON.stringify({
             nome,
@@ -93,7 +136,8 @@ function Veterinarios({ onVoltar }: VeterinariosProps) {
         }
       )
 
-      const dados = await resposta.json()
+      const dados =
+        await resposta.json()
 
       if (!resposta.ok) {
         setErro(
@@ -101,10 +145,13 @@ function Veterinarios({ onVoltar }: VeterinariosProps) {
           dados.message ||
           'Não foi possível cadastrar o veterinário.'
         )
+
         return
       }
 
-      setSucesso('Veterinário cadastrado com sucesso!')
+      setSucesso(
+        'Veterinário cadastrado com sucesso!'
+      )
 
       setNome('')
       setCrmv('')
@@ -115,14 +162,78 @@ function Veterinarios({ onVoltar }: VeterinariosProps) {
 
       await carregarVeterinarios()
     } catch {
-      setErro('Não foi possível conectar ao servidor.')
+      setErro(
+        'Não foi possível conectar ao servidor.'
+      )
     } finally {
       setCarregando(false)
     }
   }
 
+  async function excluirVeterinario(
+    id: number
+  ) {
+    const confirmar =
+      window.confirm(
+        'Tem certeza que deseja excluir este veterinário?'
+      )
+
+    if (!confirmar) {
+      return
+    }
+
+    setErro('')
+    setSucesso('')
+
+    try {
+      const token =
+        localStorage.getItem('token')
+
+      const resposta = await fetch(
+        `http://localhost:3333/veterinarios/${id}`,
+        {
+          method: 'DELETE',
+          headers: {
+            Authorization:
+              `Bearer ${token}`,
+          },
+        }
+      )
+
+      const dados =
+        await resposta.json()
+
+      if (!resposta.ok) {
+        setErro(
+          dados.erro ||
+          dados.message ||
+          'Não foi possível excluir o veterinário.'
+        )
+
+        return
+      }
+
+      setVeterinarios(
+        (listaAtual) =>
+          listaAtual.filter(
+            (veterinario) =>
+              veterinario.id !== id
+          )
+      )
+
+      setSucesso(
+        'Veterinário excluído com sucesso!'
+      )
+    } catch {
+      setErro(
+        'Não foi possível conectar ao servidor.'
+      )
+    }
+  }
+
   return (
     <main className="cadastro-page">
+
       <div className="cadastro-container">
 
         <div className="cadastro-header">
@@ -135,9 +246,13 @@ function Veterinarios({ onVoltar }: VeterinariosProps) {
           </button>
 
           <div>
-            <h1>🩺 Veterinários</h1>
+            <h1>
+              🩺 Veterinários
+            </h1>
+
             <p>
-              Gerencie os veterinários da clínica.
+              Gerencie os veterinários
+              da clínica.
             </p>
           </div>
 
@@ -145,6 +260,7 @@ function Veterinarios({ onVoltar }: VeterinariosProps) {
             className="novo-button"
             onClick={() => {
               setErro('')
+              setSucesso('')
               setMostrarFormulario(true)
             }}
           >
@@ -168,52 +284,80 @@ function Veterinarios({ onVoltar }: VeterinariosProps) {
         {mostrarFormulario && (
           <div className="form-card">
 
-            <h2>Novo Veterinário</h2>
+            <h2>
+              Novo Veterinário
+            </h2>
 
-            <form onSubmit={cadastrarVeterinario}>
+            <form
+              onSubmit={
+                cadastrarVeterinario
+              }
+            >
 
               <div className="form-grid">
 
                 <div className="campo">
-                  <label>Nome</label>
+                  <label>
+                    Nome
+                  </label>
+
                   <input
                     value={nome}
                     onChange={(e) =>
-                      setNome(e.target.value)
+                      setNome(
+                        e.target.value
+                      )
                     }
                     placeholder="Nome completo"
                   />
                 </div>
 
                 <div className="campo">
-                  <label>CRMV</label>
+                  <label>
+                    CRMV
+                  </label>
+
                   <input
                     value={crmv}
                     onChange={(e) =>
-                      setCrmv(e.target.value)
+                      setCrmv(
+                        e.target.value
+                      )
                     }
                     placeholder="Número do CRMV"
                   />
                 </div>
 
                 <div className="campo">
-                  <label>Especialidade</label>
+                  <label>
+                    Especialidade
+                  </label>
+
                   <input
-                    value={especialidade}
+                    value={
+                      especialidade
+                    }
                     onChange={(e) =>
-                      setEspecialidade(e.target.value)
+                      setEspecialidade(
+                        e.target.value
+                      )
                     }
                     placeholder="Ex.: Clínica geral"
                   />
                 </div>
 
                 <div className="campo">
-                  <label>E-mail</label>
+                  <label>
+                    E-mail
+                  </label>
+
                   <input
                     type="email"
                     value={email}
                     onChange={(e) =>
-                      setEmail(e.target.value)
+                      setEmail(
+                        e.target.value
+                      )
                     }
                     placeholder="E-mail"
                   />
@@ -227,7 +371,9 @@ function Veterinarios({ onVoltar }: VeterinariosProps) {
                   type="button"
                   className="cancelar-button"
                   onClick={() =>
-                    setMostrarFormulario(false)
+                    setMostrarFormulario(
+                      false
+                    )
                   }
                 >
                   Cancelar
@@ -246,45 +392,89 @@ function Veterinarios({ onVoltar }: VeterinariosProps) {
               </div>
 
             </form>
+
           </div>
         )}
 
         <div className="lista-card">
 
-          <h2>Veterinários cadastrados</h2>
+          <h2>
+            Veterinários cadastrados
+          </h2>
 
           {veterinarios.length === 0 ? (
             <div className="lista-vazia">
-              Nenhum veterinário cadastrado.
+              Nenhum veterinário
+              cadastrado.
             </div>
           ) : (
+
             <div className="tabela">
 
               <div className="tabela-header">
                 <span>Nome</span>
                 <span>CRMV</span>
-                <span>Especialidade</span>
+                <span>
+                  Especialidade
+                </span>
                 <span>E-mail</span>
+                <span>Ações</span>
               </div>
 
-              {veterinarios.map((veterinario) => (
-                <div
-                  className="tabela-linha"
-                  key={veterinario.id}
-                >
-                  <span>{veterinario.nome}</span>
-                  <span>{veterinario.crmv}</span>
-                  <span>{veterinario.especialidade}</span>
-                  <span>{veterinario.email}</span>
-                </div>
-              ))}
+              {veterinarios.map(
+                (veterinario) => (
+
+                  <div
+                    className="tabela-linha"
+                    key={
+                      veterinario.id
+                    }
+                  >
+
+                    <span>
+                      {veterinario.nome}
+                    </span>
+
+                    <span>
+                      {veterinario.crmv}
+                    </span>
+
+                    <span>
+                      {
+                        veterinario.especialidade
+                      }
+                    </span>
+
+                    <span>
+                      {veterinario.email}
+                    </span>
+
+                    <span>
+                      <button
+                        className="excluir-button"
+                        onClick={() =>
+                          excluirVeterinario(
+                            veterinario.id
+                          )
+                        }
+                      >
+                        🗑 Excluir
+                      </button>
+                    </span>
+
+                  </div>
+
+                )
+              )}
 
             </div>
+
           )}
 
         </div>
 
       </div>
+
     </main>
   )
 }

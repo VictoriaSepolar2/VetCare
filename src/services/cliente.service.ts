@@ -60,3 +60,29 @@ export async function buscarClientePorId(id: number) {
 
   return cliente;
 }
+
+export async function excluirCliente(id: number) {
+  const cliente = await prisma.cliente.findUnique({
+    where: { id },
+    include: { pets: true },
+  });
+
+  if (!cliente) {
+    throw new AppError("Cliente não encontrado.", 404);
+  }
+
+  if (cliente.pets.length > 0) {
+    throw new AppError(
+      "Este cliente possui pets cadastrados. Exclua os pets primeiro.",
+      409,
+    );
+  }
+
+  await prisma.cliente.delete({
+    where: { id },
+  });
+
+  return {
+    mensagem: "Cliente excluído com sucesso.",
+  };
+}

@@ -111,5 +111,32 @@ router.get('/', authMiddleware, clienteController.listar);
  */
 router.get('/:id', authMiddleware, clienteController.buscarPorId);
 
-export default router;
 
+/**
+ * @openapi
+ * /clientes/{id}:
+ *   delete:
+ *     tags:
+ *       - Clientes
+ *     summary: Excluir um cliente
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Cliente excluído com sucesso.
+ *       401:
+ *         description: Token não fornecido ou inválido.
+ *       404:
+ *         description: Cliente não encontrado.
+ *       409:
+ *         description: O cliente possui pets cadastrados.
+ */
+router.delete('/:id', authMiddleware, clienteController.excluir);
+
+export default router;

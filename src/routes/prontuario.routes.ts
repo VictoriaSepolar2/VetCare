@@ -167,4 +167,30 @@ router.get('/:id', prontuarioController.buscarPorId);
  */
 router.put('/:id', prontuarioController.atualizar);
 
+
+/**
+ * @openapi
+ * /prontuarios/{id}:
+ *   delete:
+ *     tags:
+ *       - Prontuários
+ *     summary: Excluir um prontuário
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Prontuário excluído com sucesso.
+ *       401:
+ *         description: Token não fornecido ou inválido.
+ *       404:
+ *         description: Prontuário não encontrado.
+ */
+router.delete('/:id', prontuarioController.excluir);
+
 export default router;

@@ -77,3 +77,8 @@ router.get(
 );
 
 export default router;
+
+router.delete(
+  '/:id',
+  usuarioController.excluir
+);

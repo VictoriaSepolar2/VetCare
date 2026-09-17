@@ -33,3 +33,15 @@ export async function listar(
 
   return res.status(200).json(usuarios);
 }
+
+export async function excluir(
+  req: Request,
+  res: Response
+): Promise<Response> {
+  const id = Number(req.params.id)
+
+  const resultado =
+    await usuarioService.excluirUsuario(id)
+
+  return res.status(200).json(resultado)
+}

@@ -183,6 +183,49 @@ function Consultas({ onVoltar }: ConsultasProps) {
     return new Date(dataConsulta).toLocaleString('pt-BR')
   }
 
+  async function excluirConsulta(id: number) {
+    const confirmar = window.confirm(
+      'Tem certeza que deseja excluir esta consulta?'
+    )
+
+    if (!confirmar) return
+
+    setErro('')
+    setSucesso('')
+
+    try {
+      const token = localStorage.getItem('token')
+
+      const resposta = await fetch(
+        `http://localhost:3333/consultas/${id}`,
+        {
+          method: 'DELETE',
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+
+      const dados = await resposta.json()
+
+      if (!resposta.ok) {
+        setErro(
+          dados.erro ||
+          dados.message ||
+          'Não foi possível excluir a consulta.'
+        )
+        return
+      }
+
+      setConsultas((listaAtual) =>
+        listaAtual.filter((item) => item.id !== id)
+      )
+      setSucesso('Consulta excluída com sucesso!')
+    } catch {
+      setErro('Não foi possível conectar ao servidor.')
+    }
+  }
+
   return (
     <main className="cadastro-page">
       <div className="cadastro-container">
@@ -405,6 +448,15 @@ function Consultas({ onVoltar }: ConsultasProps) {
                         </button>
                       </>
                     )}
+
+                    <button
+                      className="excluir-button"
+                      onClick={() =>
+                        excluirConsulta(consulta.id)
+                      }
+                    >
+                      Excluir
+                    </button>
 
                   </span>
                 </div>

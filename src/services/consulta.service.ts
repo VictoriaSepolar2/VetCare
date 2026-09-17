@@ -126,3 +126,30 @@ export async function cancelarConsulta(id: number) {
     },
   });
 }
+
+
+export async function excluirConsulta(id: number) {
+  const consulta = await prisma.consulta.findUnique({
+    where: { id },
+    include: { prontuario: true },
+  });
+
+  if (!consulta) {
+    throw new AppError("Consulta não encontrada.", 404);
+  }
+
+  if (consulta.prontuario) {
+    throw new AppError(
+      "Esta consulta possui prontuário. Exclua o prontuário primeiro.",
+      409,
+    );
+  }
+
+  await prisma.consulta.delete({
+    where: { id },
+  });
+
+  return {
+    mensagem: "Consulta excluída com sucesso.",
+  };
+}

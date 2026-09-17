@@ -188,4 +188,35 @@ router.put(
   petController.atualizar
 )
 
+
+/**
+ * @openapi
+ * /pets/{id}:
+ *   delete:
+ *     tags:
+ *       - Pets
+ *     summary: Excluir um pet
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Pet excluído com sucesso.
+ *       401:
+ *         description: Token não fornecido ou inválido.
+ *       404:
+ *         description: Pet não encontrado.
+ *       409:
+ *         description: O pet possui consultas cadastradas.
+ */
+router.delete(
+  '/:id',
+  petController.excluir
+)
+
 export default router

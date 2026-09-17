@@ -117,6 +117,54 @@ function Usuarios({ onVoltar }: UsuariosProps) {
     }
   }
 
+  async function excluirUsuario(id: number) {
+    const confirmar = window.confirm(
+      'Tem certeza que deseja excluir este usuário?'
+    )
+
+    if (!confirmar) {
+      return
+    }
+
+    setErro('')
+    setSucesso('')
+
+    try {
+      const token = localStorage.getItem('token')
+
+      const resposta = await fetch(
+        `http://localhost:3333/usuarios/${id}`,
+        {
+          method: 'DELETE',
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+
+      const dados = await resposta.json()
+
+      if (!resposta.ok) {
+        setErro(
+          dados.erro ||
+          dados.message ||
+          'Não foi possível excluir o usuário.'
+        )
+        return
+      }
+
+      setSucesso('Usuário excluído com sucesso!')
+
+      setUsuarios((usuariosAtuais) =>
+        usuariosAtuais.filter(
+          (item) => item.id !== id
+        )
+      )
+    } catch {
+      setErro('Não foi possível conectar ao servidor.')
+    }
+  }
+
   return (
     <main className="cadastro-page">
       <div className="cadastro-container">
@@ -259,6 +307,7 @@ function Usuarios({ onVoltar }: UsuariosProps) {
                 <span>Usuário</span>
                 <span>E-mail</span>
                 <span>Criado em</span>
+                <span>Ações</span>
               </div>
 
               {usuarios.map((item) => (
@@ -273,6 +322,17 @@ function Usuarios({ onVoltar }: UsuariosProps) {
                     {new Date(
                       item.criadoEm
                     ).toLocaleDateString('pt-BR')}
+                  </span>
+
+                  <span>
+                    <button
+                      className="excluir-button"
+                      onClick={() =>
+                        excluirUsuario(item.id)
+                      }
+                    >
+                      Excluir
+                    </button>
                   </span>
                 </div>
               ))}

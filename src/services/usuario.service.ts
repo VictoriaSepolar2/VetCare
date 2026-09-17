@@ -72,3 +72,24 @@ export async function listarUsuarios() {
     },
   });
 }
+
+export async function excluirUsuario(id: number) {
+  const usuario = await prisma.usuario.findUnique({
+    where: { id },
+  })
+
+  if (!usuario) {
+    throw new AppError(
+      'Usuário não encontrado.',
+      404
+    )
+  }
+
+  await prisma.usuario.delete({
+    where: { id },
+  })
+
+  return {
+    mensagem: 'Usuário excluído com sucesso.',
+  }
+}

@@ -45,3 +45,14 @@ export async function atualizar(
 
   res.status(200).json(petAtualizado);
 }
+
+export async function excluir(
+  req: Request,
+  res: Response
+): Promise<void> {
+  const id = Number(req.params.id);
+
+  const resultado = await petService.excluirPet(id);
+
+  res.status(200).json(resultado);
+}

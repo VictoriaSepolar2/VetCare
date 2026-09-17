@@ -159,6 +159,47 @@ function Pets({ onVoltar }: PetsProps) {
     }
   }
 
+  async function excluirPet(id: number) {
+    const confirmar = window.confirm(
+      'Tem certeza que deseja excluir este pet?'
+    )
+
+    if (!confirmar) return
+
+    setErro('')
+    setSucesso('')
+
+    try {
+      const resposta = await fetch(
+        `http://localhost:3333/pets/${id}`,
+        {
+          method: 'DELETE',
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+
+      const dados = await resposta.json()
+
+      if (!resposta.ok) {
+        setErro(
+          dados.erro ||
+          dados.message ||
+          'Não foi possível excluir o pet.'
+        )
+        return
+      }
+
+      setPets((listaAtual) =>
+        listaAtual.filter((item) => item.id !== id)
+      )
+      setSucesso('Pet excluído com sucesso!')
+    } catch {
+      setErro('Não foi possível conectar ao servidor.')
+    }
+  }
+
   return (
     <main className="cadastro-page">
       <div className="cadastro-container">
@@ -321,6 +362,7 @@ function Pets({ onVoltar }: PetsProps) {
                 <span>Espécie</span>
                 <span>Raça</span>
                 <span>Cliente</span>
+                <span>Ações</span>
               </div>
 
               {pets.map((pet) => (
@@ -332,6 +374,14 @@ function Pets({ onVoltar }: PetsProps) {
                   <span>{pet.especie}</span>
                   <span>{pet.raca}</span>
                   <span>{pet.cliente?.nome}</span>
+                  <span>
+                    <button
+                      className="excluir-button"
+                      onClick={() => excluirPet(pet.id)}
+                    >
+                      Excluir
+                    </button>
+                  </span>
                 </div>
               ))}
 

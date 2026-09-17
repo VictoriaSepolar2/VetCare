@@ -156,6 +156,49 @@ function Clientes({ onVoltar }: ClientesProps) {
     }
   }
 
+  async function excluirCliente(id: number) {
+    const confirmar = window.confirm(
+      'Tem certeza que deseja excluir este cliente?'
+    )
+
+    if (!confirmar) return
+
+    setErro('')
+    setSucesso('')
+
+    try {
+      const token = localStorage.getItem('token')
+
+      const resposta = await fetch(
+        `http://localhost:3333/clientes/${id}`,
+        {
+          method: 'DELETE',
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+
+      const dados = await resposta.json()
+
+      if (!resposta.ok) {
+        setErro(
+          dados.erro ||
+          dados.message ||
+          'Não foi possível excluir o cliente.'
+        )
+        return
+      }
+
+      setClientes((listaAtual) =>
+        listaAtual.filter((item) => item.id !== id)
+      )
+      setSucesso('Cliente excluído com sucesso!')
+    } catch {
+      setErro('Não foi possível conectar ao servidor.')
+    }
+  }
+
   return (
     <main className="cadastro-page">
       <div className="cadastro-container">
@@ -327,6 +370,7 @@ function Clientes({ onVoltar }: ClientesProps) {
                 <span>CPF</span>
                 <span>E-mail</span>
                 <span>Telefone</span>
+                <span>Ações</span>
               </div>
 
               {clientes.map((cliente) => (
@@ -339,6 +383,14 @@ function Clientes({ onVoltar }: ClientesProps) {
                   <span>{cliente.cpf}</span>
                   <span>{cliente.email}</span>
                   <span>{cliente.telefone}</span>
+                  <span>
+                    <button
+                      className="excluir-button"
+                      onClick={() => excluirCliente(cliente.id)}
+                    >
+                      Excluir
+                    </button>
+                  </span>
                 </div>
 
               ))}
