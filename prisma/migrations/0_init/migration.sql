@@ -1,62 +1,70 @@
 -- CreateTable
 CREATE TABLE "clientes" (
-    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "id" SERIAL NOT NULL,
     "nome" TEXT NOT NULL,
     "cpf" TEXT NOT NULL,
     "email" TEXT NOT NULL,
     "telefone" TEXT NOT NULL,
-    "criadoEm" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+    "criadoEm" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "clientes_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "pets" (
-    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "id" SERIAL NOT NULL,
     "clienteId" INTEGER NOT NULL,
     "nome" TEXT NOT NULL,
     "especie" TEXT NOT NULL,
     "raca" TEXT NOT NULL,
-    "dataNascimento" DATETIME NOT NULL,
-    CONSTRAINT "pets_clienteId_fkey" FOREIGN KEY ("clienteId") REFERENCES "clientes" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
+    "dataNascimento" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "pets_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "veterinarios" (
-    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "id" SERIAL NOT NULL,
     "nome" TEXT NOT NULL,
     "crmv" TEXT NOT NULL,
     "especialidade" TEXT NOT NULL,
-    "email" TEXT NOT NULL
+    "email" TEXT NOT NULL,
+
+    CONSTRAINT "veterinarios_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "consultas" (
-    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "id" SERIAL NOT NULL,
     "petId" INTEGER NOT NULL,
     "veterinarioId" INTEGER NOT NULL,
-    "dataConsulta" DATETIME NOT NULL,
+    "dataConsulta" TIMESTAMP(3) NOT NULL,
     "statusConsulta" TEXT NOT NULL DEFAULT 'Agendada',
-    CONSTRAINT "consultas_veterinarioId_fkey" FOREIGN KEY ("veterinarioId") REFERENCES "veterinarios" ("id") ON DELETE RESTRICT ON UPDATE CASCADE,
-    CONSTRAINT "consultas_petId_fkey" FOREIGN KEY ("petId") REFERENCES "pets" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
+
+    CONSTRAINT "consultas_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "prontuarios" (
-    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "id" SERIAL NOT NULL,
     "consultaId" INTEGER NOT NULL,
     "diagnostico" TEXT NOT NULL,
     "medicamentosPrescritos" TEXT NOT NULL,
-    "dataRetorno" DATETIME,
-    CONSTRAINT "prontuarios_consultaId_fkey" FOREIGN KEY ("consultaId") REFERENCES "consultas" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
+    "dataRetorno" TIMESTAMP(3),
+
+    CONSTRAINT "prontuarios_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "usuarios" (
-    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "id" SERIAL NOT NULL,
     "nome" TEXT NOT NULL,
     "usuario" TEXT NOT NULL,
     "email" TEXT NOT NULL,
     "senha" TEXT NOT NULL,
-    "criadoEm" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+    "criadoEm" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "usuarios_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex
@@ -79,3 +87,16 @@ CREATE UNIQUE INDEX "usuarios_usuario_key" ON "usuarios"("usuario");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "usuarios_email_key" ON "usuarios"("email");
+
+-- AddForeignKey
+ALTER TABLE "pets" ADD CONSTRAINT "pets_clienteId_fkey" FOREIGN KEY ("clienteId") REFERENCES "clientes"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "consultas" ADD CONSTRAINT "consultas_veterinarioId_fkey" FOREIGN KEY ("veterinarioId") REFERENCES "veterinarios"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "consultas" ADD CONSTRAINT "consultas_petId_fkey" FOREIGN KEY ("petId") REFERENCES "pets"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "prontuarios" ADD CONSTRAINT "prontuarios_consultaId_fkey" FOREIGN KEY ("consultaId") REFERENCES "consultas"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+

@@ -1,8 +1,11 @@
 {
-  "name": "driverent-api",
+  "name": "vetcare-api",
   "version": "1.0.0",
-  "description": "API RESTful didática do sistema de aluguer de veículos DriveRent, construída com Node.js, TypeScript, Express e Prisma ORM.",
+  "description": "API do sistema de gerenciamento de clínica veterinária VetCare.",
   "main": "dist/server.js",
+  "engines": {
+    "node": "22.x"
+  },
   "prisma": {
     "seed": "ts-node prisma/seed.ts"
   },
@@ -16,13 +19,16 @@
     "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
     "build": "tsc",
     "start": "node dist/server.js",
+    "postinstall": "prisma generate",
+    "vercel-build": "prisma generate && prisma migrate deploy",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
     "prisma:studio": "prisma studio",
     "seed": "prisma db seed"
   },
   "keywords": [
-    "driverent",
+    "vetcare",
+    "veterinaria",
     "express",
     "prisma",
     "typescript",
