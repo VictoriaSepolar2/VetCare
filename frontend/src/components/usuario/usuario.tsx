@@ -1,5 +1,5 @@
 import { useEffect, useState, type FormEvent } from 'react'
-import './Usuario.css'
+import './usuario.css'
 
 interface Usuario {
   id: number

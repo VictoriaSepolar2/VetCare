@@ -1,5 +1,5 @@
 import { useEffect, useState, type FormEvent } from 'react'
-import './Pet.css'
+import './pet.css'
 
 interface Cliente {
   id: number

@@ -4,7 +4,7 @@ import {
   type FormEvent,
 } from 'react'
 
-import './Veterinario.css'
+import './veterinario.css'
 
 interface Veterinario {
   id: number

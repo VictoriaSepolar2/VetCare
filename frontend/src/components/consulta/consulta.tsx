@@ -1,5 +1,5 @@
 import { useEffect, useState, type FormEvent } from 'react'
-import './Consulta.css'
+import './consulta.css'
 
 interface Pet {
   id: number

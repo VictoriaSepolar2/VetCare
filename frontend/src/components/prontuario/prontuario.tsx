@@ -1,5 +1,5 @@
 import { useEffect, useState, type FormEvent } from 'react'
-import './Prontuario.css'
+import './prontuario.css'
 
 interface Pet {
   id: number
