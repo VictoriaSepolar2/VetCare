@@ -8,6 +8,14 @@ const SELECT_CLIENTE_PUBLICO = {
   email: true,
   telefone: true,
   criadoEm: true,
+  criadoPorId: true,
+  criadoPor: {
+    select: {
+      id: true,
+      nome: true,
+      usuario: true,
+    },
+  },
 } as const;
 
 interface CriarClienteInput {
@@ -15,6 +23,7 @@ interface CriarClienteInput {
   cpf: string;
   email: string;
   telefone: string;
+  criadoPorId: number;
 }
 
 export async function criarCliente(dados: CriarClienteInput) {

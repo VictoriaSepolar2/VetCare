@@ -9,6 +9,7 @@ export async function criar(req: Request, res: Response): Promise<void> {
     cpf,
     email,
     telefone,
+    criadoPorId: req.user!.id,
   });
 
   res.status(201).json(clienteCriado);

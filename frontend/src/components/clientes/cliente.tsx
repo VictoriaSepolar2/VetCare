@@ -8,6 +8,12 @@ interface Cliente {
   email: string
   telefone: string
   criadoEm: string
+  criadoPorId: number | null
+  criadoPor: {
+    id: number
+    nome: string
+    usuario: string
+  } | null
 }
 
 interface ClientesProps {
@@ -363,13 +369,14 @@ function Clientes({ onVoltar }: ClientesProps) {
 
           ) : (
 
-            <div className="tabela">
+            <div className="tabela cliente-tabela">
 
               <div className="tabela-header">
                 <span>Nome</span>
                 <span>CPF</span>
                 <span>E-mail</span>
                 <span>Telefone</span>
+                <span>Criado por</span>
                 <span>Ações</span>
               </div>
 
@@ -383,6 +390,9 @@ function Clientes({ onVoltar }: ClientesProps) {
                   <span>{cliente.cpf}</span>
                   <span>{cliente.email}</span>
                   <span>{cliente.telefone}</span>
+                  <span>
+                    {cliente.criadoPor?.usuario || "Cadastro anterior"}
+                  </span>
                   <span>
                     <button
                       className="excluir-button"

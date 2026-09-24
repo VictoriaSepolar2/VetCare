@@ -14,8 +14,12 @@ model Cliente {
   cpf      String   @unique
   email    String   @unique
   telefone String
-  criadoEm DateTime @default(now())
-  pets     Pet[]
+  criadoEm    DateTime @default(now())
+  criadoPorId Int?
+  criadoPor   Usuario? @relation(fields: [criadoPorId], references: [id], onDelete: SetNull)
+  pets        Pet[]
+
+  @@index([criadoPorId])
 
   @@map("clientes")
 }
@@ -78,7 +82,8 @@ model Usuario {
   usuario    String   @unique
   email      String   @unique
   senha      String
-  criadoEm   DateTime @default(now())
+  criadoEm        DateTime  @default(now())
+  clientesCriados Cliente[]
 
   @@map("usuarios")
 }

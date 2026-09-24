@@ -249,3 +249,9 @@
 .excluir-button:hover {
   background: #b52a37;
 }
+
+.cliente-tabela .tabela-header,
+.cliente-tabela .tabela-linha {
+  min-width: 900px;
+  grid-template-columns: 1.1fr 1fr 1.2fr 1fr 1fr 0.7fr;
+}
