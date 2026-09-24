@@ -54,7 +54,7 @@ function App() {
 
     try {
       const resposta = await fetch(
-        'http://localhost:3333/auth/login',
+        'https://vet-care-pink-eight.vercel.app/auth/login',
         {
           method: 'POST',
           headers: {
@@ -115,7 +115,7 @@ function App() {
 
     try {
       const resposta = await fetch(
-        'http://localhost:3333/usuarios',
+        'https://vet-care-pink-eight.vercel.app/usuarios',
         {
           method: 'POST',
           headers: {

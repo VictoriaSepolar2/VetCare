@@ -45,12 +45,12 @@ function Pets({ onVoltar }: PetsProps) {
       }
 
       const [resPets, resClientes] = await Promise.all([
-        fetch('http://localhost:3333/pets', {
+        fetch('https://vet-care-pink-eight.vercel.app/pets', {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         }),
-        fetch('http://localhost:3333/clientes', {
+        fetch('https://vet-care-pink-eight.vercel.app/clientes', {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -119,7 +119,7 @@ function Pets({ onVoltar }: PetsProps) {
       setCarregando(true)
 
       const resposta = await fetch(
-        'http://localhost:3333/pets',
+        'https://vet-care-pink-eight.vercel.app/pets',
         {
           method: 'POST',
           headers: {
@@ -171,7 +171,7 @@ function Pets({ onVoltar }: PetsProps) {
 
     try {
       const resposta = await fetch(
-        `http://localhost:3333/pets/${id}`,
+        `https://vet-care-pink-eight.vercel.app/pets/${id}`,
         {
           method: 'DELETE',
           headers: {

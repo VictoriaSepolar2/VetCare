@@ -38,7 +38,7 @@ function Clientes({ onVoltar }: ClientesProps) {
         return
       }
 
-      const resposta = await fetch('http://localhost:3333/clientes', {
+      const resposta = await fetch('https://vet-care-pink-eight.vercel.app/clientes', {
         method: 'GET',
         headers: {
           Authorization: `Bearer ${token}`,
@@ -111,7 +111,7 @@ function Clientes({ onVoltar }: ClientesProps) {
         return
       }
 
-      const resposta = await fetch('http://localhost:3333/clientes', {
+      const resposta = await fetch('https://vet-care-pink-eight.vercel.app/clientes', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -170,7 +170,7 @@ function Clientes({ onVoltar }: ClientesProps) {
       const token = localStorage.getItem('token')
 
       const resposta = await fetch(
-        `http://localhost:3333/clientes/${id}`,
+        `https://vet-care-pink-eight.vercel.app/clientes/${id}`,
         {
           method: 'DELETE',
           headers: {

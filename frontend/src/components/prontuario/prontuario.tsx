@@ -61,7 +61,7 @@ function Prontuarios({
       const [resProntuarios, resConsultas] =
         await Promise.all([
           fetch(
-            'http://localhost:3333/prontuarios',
+            'https://vet-care-pink-eight.vercel.app/prontuarios',
             {
               headers: {
                 Authorization: `Bearer ${token}`,
@@ -70,7 +70,7 @@ function Prontuarios({
           ),
 
           fetch(
-            'http://localhost:3333/consultas',
+            'https://vet-care-pink-eight.vercel.app/consultas',
             {
               headers: {
                 Authorization: `Bearer ${token}`,
@@ -122,7 +122,7 @@ function Prontuarios({
       const token = localStorage.getItem('token')
 
       const resposta = await fetch(
-        'http://localhost:3333/prontuarios',
+        'https://vet-care-pink-eight.vercel.app/prontuarios',
         {
           method: 'POST',
           headers: {
@@ -181,7 +181,7 @@ function Prontuarios({
       const token = localStorage.getItem('token')
 
       const resposta = await fetch(
-        `http://localhost:3333/prontuarios/${id}`,
+        `https://vet-care-pink-eight.vercel.app/prontuarios/${id}`,
         {
           method: 'DELETE',
           headers: {

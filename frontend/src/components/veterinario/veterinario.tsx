@@ -56,7 +56,7 @@ function Veterinarios({
         localStorage.getItem('token')
 
       const resposta = await fetch(
-        'http://localhost:3333/veterinarios',
+        'https://vet-care-pink-eight.vercel.app/veterinarios',
         {
           headers: {
             Authorization:
@@ -117,7 +117,7 @@ function Veterinarios({
         localStorage.getItem('token')
 
       const resposta = await fetch(
-        'http://localhost:3333/veterinarios',
+        'https://vet-care-pink-eight.vercel.app/veterinarios',
         {
           method: 'POST',
           headers: {
@@ -190,7 +190,7 @@ function Veterinarios({
         localStorage.getItem('token')
 
       const resposta = await fetch(
-        `http://localhost:3333/veterinarios/${id}`,
+        `https://vet-care-pink-eight.vercel.app/veterinarios/${id}`,
         {
           method: 'DELETE',
           headers: {

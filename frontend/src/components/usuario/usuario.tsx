@@ -31,7 +31,7 @@ function Usuarios({ onVoltar }: UsuariosProps) {
       const token = localStorage.getItem('token')
 
       const resposta = await fetch(
-        'http://localhost:3333/usuarios',
+        'https://vet-care-pink-eight.vercel.app/usuarios',
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -75,7 +75,7 @@ function Usuarios({ onVoltar }: UsuariosProps) {
       const token = localStorage.getItem('token')
 
       const resposta = await fetch(
-        'http://localhost:3333/usuarios',
+        'https://vet-care-pink-eight.vercel.app/usuarios',
         {
           method: 'POST',
           headers: {
@@ -133,7 +133,7 @@ function Usuarios({ onVoltar }: UsuariosProps) {
       const token = localStorage.getItem('token')
 
       const resposta = await fetch(
-        `http://localhost:3333/usuarios/${id}`,
+        `https://vet-care-pink-eight.vercel.app/usuarios/${id}`,
         {
           method: 'DELETE',
           headers: {

@@ -46,19 +46,19 @@ function Consultas({ onVoltar }: ConsultasProps) {
 
       const [resConsultas, resPets, resVeterinarios] =
         await Promise.all([
-          fetch('http://localhost:3333/consultas', {
+          fetch('https://vet-care-pink-eight.vercel.app/consultas', {
             headers: {
               Authorization: `Bearer ${token}`,
             },
           }),
 
-          fetch('http://localhost:3333/pets', {
+          fetch('https://vet-care-pink-eight.vercel.app/pets', {
             headers: {
               Authorization: `Bearer ${token}`,
             },
           }),
 
-          fetch('http://localhost:3333/veterinarios', {
+          fetch('https://vet-care-pink-eight.vercel.app/veterinarios', {
             headers: {
               Authorization: `Bearer ${token}`,
             },
@@ -101,7 +101,7 @@ function Consultas({ onVoltar }: ConsultasProps) {
       const token = localStorage.getItem('token')
 
       const resposta = await fetch(
-        'http://localhost:3333/consultas',
+        'https://vet-care-pink-eight.vercel.app/consultas',
         {
           method: 'POST',
           headers: {
@@ -151,7 +151,7 @@ function Consultas({ onVoltar }: ConsultasProps) {
       const token = localStorage.getItem('token')
 
       const resposta = await fetch(
-        `http://localhost:3333/consultas/${id}/status`,
+        `https://vet-care-pink-eight.vercel.app/consultas/${id}/status`,
         {
           method: 'PATCH',
           headers: {
@@ -197,7 +197,7 @@ function Consultas({ onVoltar }: ConsultasProps) {
       const token = localStorage.getItem('token')
 
       const resposta = await fetch(
-        `http://localhost:3333/consultas/${id}`,
+        `https://vet-care-pink-eight.vercel.app/consultas/${id}`,
         {
           method: 'DELETE',
           headers: {
