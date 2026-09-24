@@ -210,6 +210,16 @@ function Prontuarios({
     }
   }
 
+  async function editarProntuario(p: Prontuario) {
+    const diagnostico = window.prompt('Diagnóstico', p.diagnostico); if (diagnostico === null) return
+    const medicamentosPrescritos = window.prompt('Medicamentos prescritos', p.medicamentosPrescritos); if (medicamentosPrescritos === null) return
+    const dataRetorno = window.prompt('Data de retorno (AAAA-MM-DD) - pode ficar vazio', p.dataRetorno ? p.dataRetorno.slice(0,10) : ''); if (dataRetorno === null) return
+    const token=localStorage.getItem('token')
+    const resposta=await fetch(`https://vet-care-pink-eight.vercel.app/prontuarios/${p.id}`,{method:'PUT',headers:{'Content-Type':'application/json',Authorization:`Bearer ${token}`},body:JSON.stringify({diagnostico,medicamentosPrescritos,dataRetorno:dataRetorno||undefined})})
+    const dados=await resposta.json();if(!resposta.ok){setErro(dados.erro||dados.message||'Erro ao editar prontuário.');return}
+    setSucesso('Prontuário atualizado com sucesso!');await carregarDados()
+  }
+
   return (
     <main className="cadastro-page">
       <div className="cadastro-container">
@@ -406,11 +416,10 @@ function Prontuarios({
                     </p>
                   )}
 
+                  <button type="button" onClick={() => editarProntuario(prontuario)} style={{ marginRight: '6px' }}>Editar</button>
                   <button
                     className="excluir-button"
-                    onClick={() =>
-                      excluirProntuario(prontuario.id)
-                    }
+                    onClick={() => excluirProntuario(prontuario.id)}
                   >
                     🗑 Excluir
                   </button>

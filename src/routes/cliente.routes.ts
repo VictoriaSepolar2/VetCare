@@ -137,6 +137,8 @@ router.get('/:id', authMiddleware, clienteController.buscarPorId);
  *       409:
  *         description: O cliente possui pets cadastrados.
  */
+router.put('/:id', authMiddleware, clienteController.atualizar);
+
 router.delete('/:id', authMiddleware, clienteController.excluir);
 
 export default router;

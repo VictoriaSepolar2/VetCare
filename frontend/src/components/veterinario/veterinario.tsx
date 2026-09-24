@@ -231,6 +231,17 @@ function Veterinarios({
     }
   }
 
+  async function editarVeterinario(v: Veterinario) {
+    const nome = window.prompt('Nome', v.nome); if (nome === null) return
+    const crmv = window.prompt('CRMV', v.crmv); if (crmv === null) return
+    const especialidade = window.prompt('Especialidade', v.especialidade); if (especialidade === null) return
+    const email = window.prompt('E-mail', v.email); if (email === null) return
+    const token = localStorage.getItem('token')
+    const resposta = await fetch(`https://vet-care-pink-eight.vercel.app/veterinarios/${v.id}`, { method:'PUT', headers:{'Content-Type':'application/json',Authorization:`Bearer ${token}`}, body:JSON.stringify({nome,crmv,especialidade,email}) })
+    const dados=await resposta.json(); if(!resposta.ok){setErro(dados.erro||dados.message||'Erro ao editar veterinário.');return}
+    setSucesso('Veterinário atualizado com sucesso!'); await carregarVeterinarios()
+  }
+
   return (
     <main className="cadastro-page">
 
@@ -450,13 +461,10 @@ function Veterinarios({
                     </span>
 
                     <span>
+                      <button type="button" onClick={() => editarVeterinario(veterinario)} style={{ marginRight: '6px' }}>Editar</button>
                       <button
                         className="excluir-button"
-                        onClick={() =>
-                          excluirVeterinario(
-                            veterinario.id
-                          )
-                        }
+                        onClick={() => excluirVeterinario(veterinario.id)}
                       >
                         🗑 Excluir
                       </button>

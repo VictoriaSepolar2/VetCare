@@ -73,6 +73,16 @@ export async function listarUsuarios() {
   });
 }
 
+export async function atualizarUsuario(
+  id: number,
+  dados: { nome?: string; usuario?: string; email?: string }
+) {
+  const atual = await prisma.usuario.findUnique({ where: { id } });
+  if (!atual) throw new AppError('Usuário não encontrado.', 404);
+  const usuario = await prisma.usuario.update({ where: { id }, data: dados });
+  return { id: usuario.id, nome: usuario.nome, usuario: usuario.usuario, email: usuario.email, criadoEm: usuario.criadoEm };
+}
+
 export async function excluirUsuario(id: number) {
   const usuario = await prisma.usuario.findUnique({
     where: { id },

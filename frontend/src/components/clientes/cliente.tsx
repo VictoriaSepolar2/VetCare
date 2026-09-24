@@ -205,6 +205,17 @@ function Clientes({ onVoltar }: ClientesProps) {
     }
   }
 
+  async function editarCliente(cliente: Cliente) {
+    const nome = window.prompt('Nome', cliente.nome); if (nome === null) return
+    const cpf = window.prompt('CPF', cliente.cpf); if (cpf === null) return
+    const email = window.prompt('E-mail', cliente.email); if (email === null) return
+    const telefone = window.prompt('Telefone', cliente.telefone); if (telefone === null) return
+    const token = localStorage.getItem('token')
+    const resposta = await fetch(`https://vet-care-pink-eight.vercel.app/clientes/${cliente.id}`, { method: 'PUT', headers: { 'Content-Type':'application/json', Authorization: `Bearer ${token}` }, body: JSON.stringify({ nome, cpf, email, telefone }) })
+    const dados = await resposta.json(); if (!resposta.ok) { setErro(dados.erro || dados.message || 'Erro ao editar cliente.'); return }
+    setSucesso('Cliente atualizado com sucesso!'); await carregarClientes()
+  }
+
   return (
     <main className="cadastro-page">
       <div className="cadastro-container">
@@ -394,6 +405,7 @@ function Clientes({ onVoltar }: ClientesProps) {
                     {cliente.criadoPor?.usuario || "Cadastro anterior"}
                   </span>
                   <span>
+                    <button type="button" onClick={() => editarCliente(cliente)} style={{ marginRight: '6px' }}>Editar</button>
                     <button
                       className="excluir-button"
                       onClick={() => excluirCliente(cliente.id)}

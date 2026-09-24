@@ -34,6 +34,12 @@ export async function listar(
   return res.status(200).json(usuarios);
 }
 
+export async function atualizar(req: Request, res: Response): Promise<Response> {
+  const id = Number(req.params.id);
+  const usuario = await usuarioService.atualizarUsuario(id, req.body);
+  return res.status(200).json(usuario);
+}
+
 export async function excluir(
   req: Request,
   res: Response

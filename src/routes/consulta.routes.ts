@@ -155,6 +155,8 @@ router.get('/:id', consultaController.buscarPorId);
  *       404:
  *         description: Consulta não encontrada.
  */
+router.put('/:id', consultaController.atualizar);
+
 router.patch('/:id/status', consultaController.atualizarStatus);
 
 /**

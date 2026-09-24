@@ -71,6 +71,34 @@ export async function buscarConsultaPorId(id: number) {
   return consulta;
 }
 
+export async function atualizarConsulta(
+  id: number,
+  dados: { petId?: number; veterinarioId?: number; data?: string; horario?: string }
+) {
+  const atual = await buscarConsultaPorId(id);
+  if (dados.petId !== undefined) {
+    const pet = await prisma.pet.findUnique({ where: { id: dados.petId } });
+    if (!pet) throw new AppError('Pet não encontrado.', 404);
+  }
+  if (dados.veterinarioId !== undefined) {
+    const vet = await prisma.veterinario.findUnique({ where: { id: dados.veterinarioId } });
+    if (!vet) throw new AppError('Veterinário não encontrado.', 404);
+  }
+  let dataConsulta: Date | undefined;
+  if (dados.data || dados.horario) {
+    const base = new Date(atual.dataConsulta);
+    const data = dados.data || base.toISOString().slice(0,10);
+    const horario = dados.horario || base.toTimeString().slice(0,5);
+    dataConsulta = new Date(`${data}T${horario}`);
+    if (Number.isNaN(dataConsulta.getTime())) throw new AppError('Data ou horário inválido.', 400);
+  }
+  return prisma.consulta.update({
+    where: { id },
+    data: { petId: dados.petId, veterinarioId: dados.veterinarioId, dataConsulta },
+    include: { pet: true, veterinario: true },
+  });
+}
+
 export async function concluirConsulta(id: number) {
   const consulta = await prisma.consulta.findUnique({
     where: { id },

@@ -70,6 +70,19 @@ export async function buscarClientePorId(id: number) {
   return cliente;
 }
 
+export async function atualizarCliente(
+  id: number,
+  dados: { nome?: string; cpf?: string; email?: string; telefone?: string }
+) {
+  const atual = await prisma.cliente.findUnique({ where: { id } });
+  if (!atual) throw new AppError('Cliente não encontrado.', 404);
+  return prisma.cliente.update({
+    where: { id },
+    data: dados,
+    select: SELECT_CLIENTE_PUBLICO,
+  });
+}
+
 export async function excluirCliente(id: number) {
   const cliente = await prisma.cliente.findUnique({
     where: { id },

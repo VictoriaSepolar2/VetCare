@@ -226,6 +226,18 @@ function Consultas({ onVoltar }: ConsultasProps) {
     }
   }
 
+  async function editarConsulta(c: Consulta) {
+    const atual = new Date(c.dataConsulta)
+    const petId = window.prompt('ID do pet', String(c.petId)); if (petId === null) return
+    const veterinarioId = window.prompt('ID do veterinário', String(c.veterinarioId)); if (veterinarioId === null) return
+    const data = window.prompt('Data (AAAA-MM-DD)', atual.toISOString().slice(0,10)); if (data === null) return
+    const horario = window.prompt('Horário (HH:MM)', atual.toTimeString().slice(0,5)); if (horario === null) return
+    const token=localStorage.getItem('token')
+    const resposta=await fetch(`https://vet-care-pink-eight.vercel.app/consultas/${c.id}`,{method:'PUT',headers:{'Content-Type':'application/json',Authorization:`Bearer ${token}`},body:JSON.stringify({petId:Number(petId),veterinarioId:Number(veterinarioId),data,horario})})
+    const dados=await resposta.json();if(!resposta.ok){setErro(dados.erro||dados.message||'Erro ao editar consulta.');return}
+    setSucesso('Consulta atualizada com sucesso!');await carregarDados()
+  }
+
   return (
     <main className="cadastro-page">
       <div className="cadastro-container">
@@ -449,11 +461,10 @@ function Consultas({ onVoltar }: ConsultasProps) {
                       </>
                     )}
 
+                    <button type="button" onClick={() => editarConsulta(consulta)} style={{ marginRight: '6px' }}>Editar</button>
                     <button
                       className="excluir-button"
-                      onClick={() =>
-                        excluirConsulta(consulta.id)
-                      }
+                      onClick={() => excluirConsulta(consulta.id)}
                     >
                       Excluir
                     </button>

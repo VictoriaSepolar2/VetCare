@@ -34,6 +34,12 @@ export async function buscarPorId(
   res.status(200).json(consulta);
 }
 
+export async function atualizar(req: Request, res: Response): Promise<void> {
+  const id = Number(req.params.id);
+  const consulta = await consultaService.atualizarConsulta(id, req.body);
+  res.status(200).json(consulta);
+}
+
 export async function atualizarStatus(
   req: Request,
   res: Response,

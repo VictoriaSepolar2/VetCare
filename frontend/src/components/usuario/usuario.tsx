@@ -165,6 +165,16 @@ function Usuarios({ onVoltar }: UsuariosProps) {
     }
   }
 
+  async function editarUsuario(item: Usuario) {
+    const nome = window.prompt('Nome', item.nome); if (nome === null) return
+    const usuario = window.prompt('Usuário', item.usuario); if (usuario === null) return
+    const email = window.prompt('E-mail', item.email); if (email === null) return
+    const token=localStorage.getItem('token')
+    const resposta=await fetch(`https://vet-care-pink-eight.vercel.app/usuarios/${item.id}`,{method:'PUT',headers:{'Content-Type':'application/json',Authorization:`Bearer ${token}`},body:JSON.stringify({nome,usuario,email})})
+    const dados=await resposta.json();if(!resposta.ok){setErro(dados.erro||dados.message||'Erro ao editar usuário.');return}
+    setSucesso('Usuário atualizado com sucesso!');await carregarUsuarios()
+  }
+
   return (
     <main className="cadastro-page">
       <div className="cadastro-container">
@@ -325,11 +335,10 @@ function Usuarios({ onVoltar }: UsuariosProps) {
                   </span>
 
                   <span>
+                    <button type="button" onClick={() => editarUsuario(item)} style={{ marginRight: '6px' }}>Editar</button>
                     <button
                       className="excluir-button"
-                      onClick={() =>
-                        excluirUsuario(item.id)
-                      }
+                      onClick={() => excluirUsuario(item.id)}
                     >
                       Excluir
                     </button>

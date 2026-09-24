@@ -76,6 +76,8 @@ router.get(
   usuarioController.listar
 );
 
+router.put('/:id', usuarioController.atualizar);
+
 export default router;
 
 router.delete(

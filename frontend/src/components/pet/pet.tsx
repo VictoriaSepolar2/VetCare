@@ -200,6 +200,17 @@ function Pets({ onVoltar }: PetsProps) {
     }
   }
 
+  async function editarPet(pet: Pet) {
+    const nome = window.prompt('Nome', pet.nome); if (nome === null) return
+    const especie = window.prompt('Espécie', pet.especie); if (especie === null) return
+    const raca = window.prompt('Raça', pet.raca); if (raca === null) return
+    const dataNascimento = window.prompt('Data de nascimento (AAAA-MM-DD)', pet.dataNascimento.slice(0,10)); if (dataNascimento === null) return
+    const clienteId = window.prompt('ID do cliente', String(pet.clienteId)); if (clienteId === null) return
+    const resposta = await fetch(`https://vet-care-pink-eight.vercel.app/pets/${pet.id}`, { method:'PUT', headers:{'Content-Type':'application/json',Authorization:`Bearer ${token}`}, body:JSON.stringify({nome,especie,raca,dataNascimento,clienteId:Number(clienteId)}) })
+    const dados = await resposta.json(); if(!resposta.ok){setErro(dados.erro||dados.message||'Erro ao editar pet.');return}
+    setSucesso('Pet atualizado com sucesso!'); await carregarDados()
+  }
+
   return (
     <main className="cadastro-page">
       <div className="cadastro-container">
@@ -375,6 +386,7 @@ function Pets({ onVoltar }: PetsProps) {
                   <span>{pet.raca}</span>
                   <span>{pet.cliente?.nome}</span>
                   <span>
+                    <button type="button" onClick={() => editarPet(pet)} style={{ marginRight: '6px' }}>Editar</button>
                     <button
                       className="excluir-button"
                       onClick={() => excluirPet(pet.id)}
